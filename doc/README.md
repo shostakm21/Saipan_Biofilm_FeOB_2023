@@ -91,7 +91,6 @@ filtRs <- file.path(path, "filtered", paste0(sample.names, "_R_filt.fastq.gz"))
 out <- filterAndTrim(fnFs, filtFs, fnRs, filtRs, truncLen = c(280,200), maxN = 0, maxEE = c(2,2), truncQ = 2, rm.phix = TRUE, compress = TRUE, multithread = TRUE, trimLeft = c(19,20))
 head(out)
 ```
-
 ```
                                   reads.in reads.out
 Shos1_S31_L001_R1_001.fastq.gz       43232     33472
@@ -140,6 +139,11 @@ table(nchar(getSequences(seqtab)))
 seqtab.nochim <- removeBimeraDenovo(seqtab, method="consensus", multithread=TRUE, verbose=TRUE)
 dim(seqtab.nochim)
 sum(seqtab.nochim)/sum(seqtab)
+```
+```
+Identified 109144 bimeras out of 182406 input sequences.
+[1]   141 73262
+[1] 0.9262261
 ```
 
 ```{r}
