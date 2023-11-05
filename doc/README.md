@@ -726,20 +726,17 @@ ggsave("class_stacked_barchart_sed_simper.tiff", width=13, height=15)
 ```{r}
 metadata_sed_coronados_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_sed_coronados.csv")
 metadata_sed_coronados_simper
-#NOT RUN
 ```
 
 ```{r}
 otu_counts_sed_coronados_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_sed_coronados_simper.csv") %>%
   pivot_longer(-ASV, names_to = "sample_id", values_to = "count")
 otu_counts_sed_coronados_simper
-#NOT RUN
 ```
 
 ```{r}
 taxonomy_sed_coronados_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_tax_sed_coronados_simper.csv")
 taxonomy_sed_coronados_simper
-#NOT RUN
 ```
 
 ```{r}
@@ -754,7 +751,6 @@ otu_rel_abund_sed_coronados_simper <- inner_join(metadata_sed_coronados_simper, 
          values_to="taxon")
 otu_rel_abund_sed_coronados_simper
 write.table(otu_rel_abund_sed_coronados_simper, "otu_rel_abund_sed_coronados_simper.csv", sep=",", quote=F, col.names=NA)
-#NOT RUN
 ```
 
 ```{r}
@@ -772,7 +768,6 @@ otu_rel_abund_sed_coronados_simper %>%
          y="Mean Relative Abundance (%)") +
     theme_classic()
 ggsave("phylum_stacked_barchart_sed_coronados_simper.tiff", width=13, height=15)
-#NOT RUN
 
 ### Class
 otu_rel_abund_sed_coronados_simper %>%
@@ -787,27 +782,23 @@ otu_rel_abund_sed_coronados_simper %>%
          y="Mean Relative Abundance (%)") +
     theme_classic()
 ggsave("class_stacked_barchart_sed_coronados_simper.tiff", width=13, height=15)
-#NOT RUN
 ```
 
 ## Water Samples Only
 ```{r}
 metadata_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_water.csv")
 metadata_water
-#NOT RUN
 ```
 
 ```{r}
 otu_counts_water_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_water_simper.csv") %>%
   pivot_longer(-ASV, names_to = "sample_id", values_to = "count")
 otu_counts_water_simper
-#NOT RUN
 ```
 
 ```{r}
 taxonomy_water_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_tax_water_simper.csv")
 taxonomy_water_simper
-#NOT RUN
 ```
 
 ```{r}
@@ -822,7 +813,6 @@ otu_rel_abund_water_simper <- inner_join(metadata_water, otu_counts_water_simper
          values_to="taxon")
 otu_rel_abund_water_simper
 write.table(otu_rel_abund_water_simper, "otu_rel_abund_water_simper.csv", sep=",", quote=F, col.names=NA)
-#NOT RUN
 ```
 
 ```{r}
@@ -840,7 +830,7 @@ otu_rel_abund_water_simper %>%
          y="Mean Relative Abundance (%)") +
     theme_classic()
 ggsave("phylum_stacked_barchart_water_simper.tiff", width=13, height=15)
-#NOT RUN
+
 
 ### Class
 otu_rel_abund_water_simper %>%
@@ -855,27 +845,23 @@ otu_rel_abund_water_simper %>%
          y="Mean Relative Abundance (%)") +
     theme_classic()
 ggsave("class_stacked_barchart_water_simper.tiff", width=13, height=15)
-#NOT RUN
 ```
 
 ## All Samples Depth Comparison
 ```{r}
 metadata_depth <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_depth.csv")
 metadata_depth
-#NOT RUN
 ```
 
 ```{r}
 otu_counts_depth_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan_depth_simper.csv") %>%
   pivot_longer(-ASV, names_to = "sample_id", values_to = "count")
 otu_counts_depth_simper
-#NOT RUN
 ```
 
 ```{r}
 taxonomy_depth_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_tax_saipan_depth_simper.csv")
 taxonomy_depth_simper
-#NOT RUN
 ```
 
 ```{r}
@@ -889,7 +875,6 @@ otu_rel_abund_depth_simper <- inner_join(metadata_depth, otu_counts_depth_simper
          values_to="taxon")
 otu_rel_abund_depth_simper
 write.table(otu_rel_abund_depth_simper, "otu_rel_abund_saipan_depth_simper.csv", sep=",", quote=F, col.names=NA)
-#NOT RUN
 ```
 
 ```{r}
@@ -906,7 +891,6 @@ otu_rel_abund_depth_simper %>%
          y="Mean Relative Abundance (%)") +
     theme_classic()
 ggsave("phylum_stacked_barchart_depth_simper.tiff", width=13, height=15)
-#NOT RUN
 
 ## Class
 otu_rel_abund_depth_simper %>%
@@ -921,10 +905,62 @@ otu_rel_abund_depth_simper %>%
          y="Mean Relative Abundance (%)") +
     theme_classic()
 ggsave("class_stacked_barchart_depth_simper.tiff", width=13, height=15)
-#NOT RUN
 ```
 
 # NMDS Plots
+```{r}
+df1 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df1.csv")
+#df1
+
+df2 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df2.csv")
+#df2
+
+df3 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df3.csv")
+#df3
+
+df_otu <- list(df1, df2, df3)
+df_otu
+
+write.table(df_otu,"df_otu.csv", sep=",", col.names=NA)
+```
+
+```{r}
+df_otu <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_otu.csv")
+df_otu <- subset(df_otu, select = -c(X))
+df_otu
+```
+
+```{r}
+*#RSTUDIO CRASHES WITH THIS LINE OF CODE, FORFIETTING CODE*
+#otu_count <- df_otu %>%
+#  pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
+#otu_count
+
+#write.table(otu_count, "otu_count.csv", sep=",", quote=F, col.names=NA)
+```
+
+```{r}
+df_meta <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_otu_categories.csv")
+df_meta
+```
+
+```{r}
+nmds_asv_otu_all <- inner_join(df_meta, df_otu, by="sample_id")
+nmds_asv_otu_all
+
+write.table(nmds_asv_otu_all, "nmds_asv_otu_all.csv", sep=",", quote=F, col.names=NA)
+```
+
+## All Samples:
+```{r}
+pc <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_asv_otu_all.csv")
+pc
+```
+
+```{r}
+#com = pc[,]
+```
+
 ## All Samples: Bioiflm Grouped vs Sed vs Water
 ```{r}
 
@@ -970,7 +1006,6 @@ ggsave("class_stacked_barchart_depth_simper.tiff", width=13, height=15)
 
 ```
 
-
 ## All Water: By Location
 ```{r}
 
@@ -986,9 +1021,6 @@ ggsave("class_stacked_barchart_depth_simper.tiff", width=13, height=15)
 ```{r}
 
 ```
-
-
-
 
 ## Diversity Index Value Generation
 ```{r}
@@ -1022,4 +1054,6 @@ ggsave("class_stacked_barchart_depth_simper.tiff", width=13, height=15)
 ```{r}
 
 ```
+
+
 
