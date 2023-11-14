@@ -2,13 +2,13 @@ Saipan Data Analysis Pipeline
 
 # Load all necessary packages: 
 ```{r}
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("microbiome")
-install.packages("vegan")
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+  #install.packages("BiocManager")
+#BiocManager::install("microbiome")
+#install.packages("vegan")
 library("vegan")
 
-install.packages("devtools")
+#install.packages("devtools")
 library("devtools")
 
 library(dada2)
@@ -50,7 +50,6 @@ fnRs <- sort(list.files(path, pattern="_R2_001.fastq", full.names = TRUE))
 sample.names <- sapply(strsplit(basename(fnFs), "_"), `[`, 1)
 #list(sample.names)
 ```
-
 
 ```{r}
 #plotQualityProfile(fnFs[1:2])
@@ -227,7 +226,7 @@ otu_rel_abund %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("phylum_stacked_barchart_saipan_all.tiff", width=20, height=7)
+ggsave("phylum_stacked_barchart_saipan_all.tiff", width=20, height=10)
 
 ## Class
 otu_rel_abund %>%
@@ -769,14 +768,14 @@ otu_rel_abund_water_simper %>%
 ## All Samples Depth Comparison
 ```{r}
 metadata_depth <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_depth_biofilm.csv")
-metadata_depth
+#metadata_depth
 
 otu_counts_depth_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_biof_depth_simper.csv") %>%
   pivot_longer(-ASV, names_to = "sample_id", values_to = "count")
-otu_counts_depth_simper
+#otu_counts_depth_simper
 
 taxonomy_depth_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_tax_biof_depth_simper.csv")
-taxonomy_depth_simper
+#taxonomy_depth_simper
 ```
 
 ```{r}
@@ -822,35 +821,6 @@ otu_rel_abund_depth_simper %>%
 #ggsave("class_stacked_barchart_depth_simper.tiff", width=13, height=15)
 ```
 
-# NMDS Plots
-```{r}
-df1 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df1.csv")
-#df1
-
-df2 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df2.csv")
-#df2
-
-df3 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df3.csv")
-#df3
-
-df_otu <- list(df1, df2, df3)
-df_otu
-
-#write.table(df_otu,"df_otu.csv", sep=",", col.names=NA)
-```
-
-```{r}
-df_otu <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_otu.csv")
-df_otu <- subset(df_otu, select = -c(X))
-df_otu
-
-#otu_count <- df_otu %>%
-#  pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
-#otu_count
-
-#write.table(otu_count, "otu_count.csv", sep=",", quote=F, col.names=NA)
-```
-
 ```{r}
 df_meta <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_otu_categories.csv")
 df_meta
@@ -870,7 +840,7 @@ pc
 
 ```{r}
 #make community matrix: extract columns with ASV information
-com <- pc[,5:ncol(pc)]
+com <- pc[,6:ncol(pc)]
 com
 ```
 
@@ -904,6 +874,7 @@ data.scores = as.data.frame(scores(nmds)$sites)
 data.scores$sample_id = pc$sample_id
 data.scores$location = pc$location
 data.scores$depth = pc$depth
+data.scores$sample_type = pc$sample_type
 
 head(data.scores)
 ```
@@ -924,22 +895,160 @@ xx = ggplot(data.scores, aes(x = NMDS1, y = NMDS2)) +
        legend.key=element_blank()) +
  labs(x = "NMDS1", colour = "location", y = "NMDS2")
 xx
-ggsave("NMDS_all_samples.tiff", width = 10, height = 10)
+#ggsave("NMDS_all_samples_location.tiff", width = 10, height = 10)
 ```
 
-## All Samples: Bioiflm Grouped vs Sed vs Water
+## All Samples: Bioiflm vs Sed vs Water
 ```{r}
-
+xx1 = ggplot(data.scores, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = sample_type))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "Sample Type", y = "NMDS2")
+xx1
+#ggsave("NMDS_all_samples_sample_type.tiff", width = 10, height = 10)
 ```
 
-## All Samples: Biofilms Separate vs Sed vs Water
+## All Samples: By Depth
 ```{r}
+xx2 = ggplot(data.scores, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = depth))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "Depth", y = "NMDS2")
+xx2
+#ggsave("NMDS_all_samples_depth.tiff", width = 10, height = 10)
+```
 
+```{r}
+df_meta_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_biof_only_categories.csv")
+#df_meta_biof
+```
+
+```{r}
+nmds_asv_otu_biof <- inner_join(df_meta_biof, df_otu_biof, by="sample_id")
+nmds_asv_otu_biof
+
+#write.table(nmds_asv_otu_biof, "nmds_asv_otu_biof_only.csv", sep=",", quote=F, col.names=NA)
+```
+
+```{r}
+pc1 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_asv_otu_biof_only.csv")
+pc1
+```
+
+```{r}
+#make community matrix: extract columns with ASV information
+com1 <- pc1[,7:ncol(pc1)]
+com1
+```
+
+```{r}
+#turn ASV information into a matrix
+m_com1 <- as.matrix(com1)
+```
+
+```{r}
+#Run NMDS using Bray-Curtis distance
+set.seed(123)
+nmds1 <- metaMDS(m_com1, distance="bray") #stress = 0.1910382 
+nmds1
+plot(nmds1)
+```
+
+```{r}
+#access the specific points data of the NMDS plot & scores
+str(nmds1)
+nmds1$points
+scores(nmds1)
+```
+
+```{r}
+#extract NMDS scores
+data.scores1 = as.data.frame(scores(nmds1)$sites)
+```
+
+```{r}
+#add columns to data frame
+data.scores1$sample_id = pc1$sample_id
+data.scores1$location = pc1$location
+data.scores1$depth = pc1$depth
+data.scores1$metal_type = pc1$metal_type
+
+head(data.scores1)
 ```
 
 ## Biofilm Only: By Location
 ```{r}
+xx3 = ggplot(data.scores1, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = location))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "Location", y = "NMDS2")
+xx3
+#ggsave("NMDS_biof_only_location.tiff", width = 10, height = 10)
+```
 
+## Biofilm Only: By Metal Type
+```{r}
+xx4 = ggplot(data.scores1, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = metal_type))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "Metal Type", y = "NMDS2")
+xx4
+#ggsave("NMDS_biof_only_metal_type.tiff", width = 10, height = 10)
+```
+
+## Biofilm Only: By Depth
+```{r}
+xx5 = ggplot(data.scores1, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = depth))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "Depth", y = "NMDS2")
+xx5
+#ggsave("NMDS_biof_only_depth.tiff", width = 10, height = 10)
 ```
 
 ## Biofilm Only: Coronado vs Deep Coronado
@@ -977,48 +1086,220 @@ ggsave("NMDS_all_samples.tiff", width = 10, height = 10)
 
 ```
 
-## All Samples: By Depth
-```{r}
-
-```
-
 # Statistical Analyses
 ## Anosim
 ```{r}
+pc_ano <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_asv_otu_all.csv")
+pc_ano
+```
+
+```{r}
+# All Samples: Biof vs Sed vs Water by Location
+com_ano = pc_ano[,6:ncol(pc_ano)]
+m_com_ano = as.matrix(com_ano)
+ano_all = anosim(m_com_ano, pc_ano$location, distance = "bray", permutations = 9999)
+ano_all
+
+# ANOSIM statistic R: 0.1327 
+      # Significance: 1e-04
+```
+
+```{r}
+# All Samples: Biof vs Sed vs Water by Sample Type
+com_ano1 = pc_ano[,6:ncol(pc_ano)]
+m_com_ano1 = as.matrix(com_ano1)
+ano_all1 = anosim(m_com_ano1, pc_ano$sample_type, distance = "bray", permutations = 9999)
+ano_all1
+
+# ANOSIM statistic R: 0.8735 
+      # Significance: 1e-04 
+```
+
+```{r}
+# All Samples: Biof vs Sed vs Water by Depth
+com_ano2 = pc_ano[,6:ncol(pc_ano)]
+m_com_ano2 = as.matrix(com_ano2)
+ano_all2 = anosim(m_com_ano2, pc_ano$depth, distance = "bray", permutations = 9999)
+ano_all2
+
+# ANOSIM statistic R: 0.221 
+      # Significance: 1e-04 
+```
+
+```{r}
+# Biofilm Samples Only by Location
 
 ```
 
-## Diversity Index Value Generation
+# Ecological Distance Matrices
 ```{r}
+# Biofilm, Sediment & Water Samples
+otu_table <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv",header=T,row.names=1,check.names=FALSE)
 
+## Transpose data to have sample names on rows
+otu.table.diver <- t(otu_table)
+otu.table.diver <- as.data.frame(otu.table.diver)
+head(otu.table.diver)
 ```
 
-
-## Ecological Distances Matrices & Rarefaction
+# NMDS File Formatting: All Samples
 ```{r}
+df1 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df1.csv")
+#df1
+df2 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df2.csv")
+#df2
+df3 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df3.csv")
+#df3
+df_otu <- list(df1, df2, df3)
+df_otu
 
+#write.table(df_otu,"df_otu.csv", sep=",", col.names=NA)
 ```
 
-### Shannons H Diveristy
 ```{r}
+df_otu <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_otu.csv")
+df_otu <- subset(df_otu, select = -c(X))
+df_otu
 
+otu_count <- Reduce(function(x, y) merge(x, y, all=TRUE), df_otu) %>%
+  pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
+
+write.table(otu_count, "otu_count.csv", sep=",", quote=F, col.names=NA)
+
+otu_count %>%
+    group_by(sample_id) %>%
+  mutate(total = sum(count)) %>%
+  filter(total > 5000) %>%
+  group_by(ASV) %>%
+  mutate(total=sum(count)) %>% 
+  filter(total != 0) %>%
+  as.data.frame()
+#Going to set threshold at 5000
 ```
 
-
-### Spp Richness
+# Ecological Distance Matrices: Biofilm Only
 ```{r}
+## Biofilm Only
+otu_table_bio <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan_biof_simper.csv", header=T, row.names=1, check.names=FALSE)
+otu_table_bio
 
+## Transpose the data to have sample names on rows
+otu.table.diver.bio <- t(otu_table_bio)
+otu.table.diver.bio <- as.data.frame(otu.table.diver.bio)
+head(otu.table.diver.bio)
 ```
 
-
-### Pielou Evenness
 ```{r}
+df1_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df1_biof_only.csv")
+df1_biof
 
+df2_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df2_biof_only.csv")
+df2_biof
+
+df3_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df3_biof_only.csv")
+df3_biof
+
+df_otu_biof <- list(df1_biof, df2_biof, df3_biof)
+df_otu_biof
+
+#write.table(df_otu_biof,"df_otu_biof.csv", sep=",", col.names=NA)
+```
+
+```{r}
+df_otu_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_otu_biof.csv")
+df_otu_biof <- subset(df_otu_biof, select = -c(X))
+df_otu_biof
+
+otu_count_biof <- df_otu_biof %>%
+  pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
+otu_count
+
+write.table(otu_count_biof, "otu_count_biof.csv", sep=",", quote=F, col.names=NA)
+
+otu_count_biof %>%
+    group_by(sample_id) %>%
+  mutate(total = sum(count)) %>%
+  filter(total > 5000) %>%
+  group_by(ASV) %>%
+  mutate(total=sum(count)) %>% 
+  filter(total != 0) %>%
+  as.data.frame()
+#Going to set threshold at 5000
+```
+
+# Shannons H Diveristy
+```{r}
+data(otu.table.diver)
+H<-diversity(otu.table.diver)
+H
+```
+
+# Spp Richness
+```{r}
+richness <- specnumber(otu.table.div)
+richness
+```
+
+# Pielou Evenness
+```{r}
+evenness <- H/log(richness)
+evenness
+```
+
+```{r}
+metadata_all <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata.csv")
+metadata_all
+```
+
+```{r}
+alpha <- cbind(shannon = H, richness = richness, pielou = evenness, metadata_all)
+write.csv(alpha, "diversity_indices_all_samples.csv")
+#head(alpha)
+```
+
+```{r}
+plot.shan <- ggplot(alpha, aes(x = location, y = shannon, colour = location)) +
+geom_boxplot(size = 3) +
+ylab("Shannon's H'") + 
+xlab("") +
+ggtitle("Shannon's Diversity - Samples Across Site")+
+theme_bw() +
+theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
+plot.shan
+ggsave("Shannon_Location_all_samples.tiff")
+```
+
+```{r}
+plot.rich <-ggplot(alpha, aes(x = location, y = richness, colour = location)) +
+geom_boxplot(size = 3) +
+ylab("Species Richness") +
+xlab("") +
+theme_bw() +
+theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
+plot.rich
+ggsave("Richness_Location_all_samples.tiff")
+```
+
+```{r}
+plot.even <- ggplot(alpha, aes(x = location, y = pielou, colour = location)) +
+geom_boxplot(size = 3) +
+ylab("Pielou's Evenness") +
+xlab("") +
+theme_bw() +
+theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
+plot.even
+ggsave("Pielou's_Evenness_Location_all_samples.tiff")
+```
+
+```{r}
+legend <- get_legend(plot.even)
+
+plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
+
+ggsave("Shannon_Richness_Eveness_all_samples.tiff")
 ```
 
 # SIMPER Analysis
 ```{r}
 
 ```
-
-
