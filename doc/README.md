@@ -160,6 +160,131 @@ taxonomy
 asv_tax <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_tax_saipan.csv")
 asv_tax
 ```
+# Phyloseq
+```{r}
+library(phyloseq)
+library(Biostrings)
+```
+
+```{r}
+# Read data into R
+otu_tab <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv")
+otu_tab
+tax_tab <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_tax_saipan.csv")
+tax_tab
+samples_df <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata.csv")
+samples_df
+```
+
+```{r}
+# Phyloseq objects need to have row.names
+otu_tab <- otu_tab %>%
+  tibble::column_to_rownames("ASV")
+
+tax_tab <- tax_tab %>%
+  tibble::column_to_rownames("ASV")
+
+samples_df <- samples_df %>%
+  tibble::column_to_rownames("sample_id")
+```
+
+```{r}
+# Transform OTU & Tax table into matrices
+otu_tab <- as.matrix(otu_tab)
+tax_tab <- as.matrix(tax_tab)
+```
+
+```{r}
+#Transform into Phyloseq Objects
+ASV = otu_table(otu_tab, taxa_are_rows = TRUE)
+TAX = tax_table(tax_tab)
+sample_id = sample_data(samples_df)
+  
+ps <- phyloseq(ASV, TAX, sample_id)
+ps
+
+
+#phyloseq-class experiment-level object
+#otu_table()   OTU Table:         [ 34762 taxa and 141 samples ]
+#sample_data() Sample Data:       [ 141 samples by 5 sample variables ]
+#tax_table()   Taxonomy Table:    [ 34762 taxa by 6 taxonomic ranks ]
+```
+
+```{r}
+# Visualize Data
+sample_names(ps)
+rank_names(ps)
+sample_variables(ps)
+```
+
+```{r}
+# Normalize number of reads in each sample using median sequencing depth
+total = median(sample_sums(ps))
+standf = function(x, t=total) round(t * (x / sum(x)))
+ps = transform_sample_counts(ps, standf)
+```
+
+```{r}
+# Bar graphs based on division
+plot_bar(ps, fill = "Phylum")
+```
+
+```{r}
+plot_bar(ps, fill = "Phylum") + 
+  geom_bar(aes(color=Phylum, fill=Phylum), stat="identity", position="stack")
+```
+
+```{r}
+# Heatmaps
+plot_heatmap(ps, method = "NMDS", distance = "bray")
+```
+
+```{r}
+ps_abund <- filter_taxa(ps, function(x) sum(x > total*0.20) > 0, TRUE)
+ps_abund
+```
+
+```{r}
+otu_table(ps)[1:8, 1:5]
+```
+
+```{r}
+plot_heatmap(ps_abund, method = "NMDS", distance = "bray")
+```
+
+```{r}
+# Alpha Diversity: Plot Chao1 richness estimator and Shannon diversity estimator
+plot_richness(ps, measures=c("Chao1", "Shannon"))
+```
+
+```{r}
+# Regroup together from the same location
+plot_richness(ps, measures=c("Chao1", "Shannon"), x="level", color="location")
+```
+
+```{r}
+# Ordination
+ps.ord <- ordinate(ps, "NMDS", "bray")
+plot_ordination(ps, ps.ord, type="taxa", color="Phylum", shape= "Location", 
+                  title="Saipan ASVs")
+```
+
+```{r}
+plot_ordination(ps, ps.ord, type="taxa", color="Phylum", 
+                  title="Sapain ASVs", label="Phylum") + 
+                  facet_wrap(~Division, 3)
+```
+
+```{r}
+plot_ordination(ps, ps.ord, type="samples", color="Location", 
+                  shape="depth", title="Samples") + geom_point(size=3)
+```
+
+```{r}
+plot_ordination(ps, ps.ord, type="split", color="Phylum", 
+                  shape="Location", title="Biplot", label = "station") +  
+  geom_point(size=3)
+```
 
 ## OTU Relative Abundance Generation
 ```{r}
