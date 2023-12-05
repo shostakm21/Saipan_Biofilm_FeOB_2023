@@ -160,6 +160,7 @@ taxonomy
 asv_tax <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_tax_saipan.csv")
 asv_tax
 ```
+
 # Phyloseq
 ```{r}
 library(phyloseq)
@@ -913,7 +914,7 @@ otu_rel_abund_depth_simper <- inner_join(metadata_depth, otu_counts_depth_simper
          names_to="level",
          values_to="taxon")
 #otu_rel_abund_depth_simper
-#write.table(otu_rel_abund_depth_simper, "otu_rel_abund_saipan_depth_simper.csv", sep=",", quote=F, col.names=NA)
+write.table(otu_rel_abund_depth_simper, "otu_rel_abund_saipan_depth_simper.csv", sep=",", quote=F, col.names=NA)
 ```
 
 ```{r}
@@ -929,7 +930,7 @@ otu_rel_abund_depth_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("phylum_stacked_barchart_depth_simper.tiff", width=27, height=15)
+ggsave("phylum_stacked_barchart_depth_simper.tiff", width=27, height=15)
 
 ## Class
 otu_rel_abund_depth_simper %>%
@@ -1258,17 +1259,36 @@ ano_all2
 
 # Ecological Distance Matrices
 ```{r}
-# Biofilm, Sediment & Water Samples
-otu_table <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv",header=T,row.names=1,check.names=FALSE)
+#Diversity index value generating
+otu_table<-read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv",header=T,row.names=1,check.names=FALSE)
+otu_table <- as.data.frame.matrix(otu_table)
+otu_table
 
-## Transpose data to have sample names on rows
-otu.table.diver <- t(otu_table)
-otu.table.diver <- as.data.frame(otu.table.diver)
-head(otu.table.diver)
+#Transpose the data to have sample names on rows
+otu_table<-t(otu_table)
+data(otu_table)
+H<-diversity(otu_table)
+simp<-diversity(otu_table, "simpson")
+invsimp<-diversity(otu_table, "inv")
+
+## Unbiased Simpson (Hurlbert 1971, eq. 5) with rarefy:
+unbias.simp <- rarefy(otu_table, 2) - 1
+
+## Fisher alpha
+alpha <- fisher.alpha(otu_table)
+## Species richness (S) and Pielou's evenness (J):
+S <- specnumber(otu_table)
+J <- H/log(S)
+
+## Plot all
+pairs(cbind(H, simp, invsimp, unbias.simp, alpha), pch="+", col="blue")
+alpha
+write.table(J, "/Users/maggieshostak/Desktop/pielou_evenness.txt", sep="\t")
 ```
 
-# NMDS File Formatting: All Samples
 ```{r}
+library(tidyverse)
+
 df1 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df1.csv")
 #df1
 df2 <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df2.csv")
@@ -1286,12 +1306,13 @@ df_otu <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Sai
 df_otu <- subset(df_otu, select = -c(X))
 df_otu
 
-otu_count <- Reduce(function(x, y) merge(x, y, all=TRUE), df_otu) %>%
+otu_count_all <- df_otu %>%
   pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
+otu_count_all
 
-write.table(otu_count, "otu_count.csv", sep=",", quote=F, col.names=NA)
+#write.table(otu_count, "otu_count.csv", sep=",", quote=F, col.names=NA)
 
-otu_count %>%
+otu_count_all %>%
     group_by(sample_id) %>%
   mutate(total = sum(count)) %>%
   filter(total > 5000) %>%
@@ -1300,6 +1321,56 @@ otu_count %>%
   filter(total != 0) %>%
   as.data.frame()
 #Going to set threshold at 5000
+```
+
+## Writing functions for Shannon, Richness & Simpson
+```{r}
+richness <- function(x){
+  sum(x > 0)}
+
+shannon <- function(x){
+  relabund <- x[x>0]/sum(x)
+  -sum(relabund * log(relabund))
+}
+
+simpson <- function(x){
+  n <- sum(x)
+  sum(x * (x-1) /(n*n-1))
+}
+```
+
+## Diversity Metrics
+```{r}
+otu_count_all %>%
+  group_by(sample_id) %>%
+  summarize(richness = richness(count),
+            shannon = shannon(count), 
+            simpson = simpson(count),
+            invsimp = 1/simpson,
+            evenness = shannon/log(richness),
+            n=sum(count))
+```
+
+## Plot Alpha Diversity Functions
+```{r}
+otu_count_all %>%
+  group_by(sample_id) %>%
+  summarize(richness = richness(count),
+            shannon = shannon(count), 
+            simpson = simpson(count),
+            invsimp = 1/simpson,
+            evenness = shannon/log(richness),
+            n=sum(count)) %>%
+  pivot_longer(cols=c(richness, shannon, invsimp, simpson, evenness), 
+               names_to="metric") %>%
+ggplot(aes(x=n, y=value)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~metric, nrow=4, scales="free_y")
+
+ggsave("alpha_diversity_metrics_all.tiff", width = 10, height = 10)
+
+#Each point represents a sample, (Y) Value of metric & (X) Total number of sequences for each sample
 ```
 
 # Ecological Distance Matrices: Biofilm Only
@@ -1337,10 +1408,12 @@ df_otu_biof
 
 otu_count_biof <- df_otu_biof %>%
   pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
-otu_count
+otu_count_biof
 
-write.table(otu_count_biof, "otu_count_biof.csv", sep=",", quote=F, col.names=NA)
+#write.table(otu_count_biof, "otu_count_biof.csv", sep=",", quote=F, col.names=NA)
+```
 
+```{r}
 otu_count_biof %>%
     group_by(sample_id) %>%
   mutate(total = sum(count)) %>%
@@ -1352,79 +1425,60 @@ otu_count_biof %>%
 #Going to set threshold at 5000
 ```
 
-# Shannons H Diveristy
 ```{r}
-data(otu.table.diver)
-H<-diversity(otu.table.diver)
-H
+otu_count_biof %>%
+  group_by(sample_id) %>%
+  summarize(richness = richness(count),
+            shannon = shannon(count), 
+            simpson = simpson(count),
+            invsimp = 1/simpson,
+            evenness = shannon/log(richness),
+            n=sum(count))
 ```
 
-# Spp Richness
+## Plot Alpha Diversity Functions
 ```{r}
-richness <- specnumber(otu.table.div)
-richness
-```
+otu_count_biof %>%
+  group_by(sample_id) %>%
+  summarize(richness = richness(count),
+            shannon = shannon(count), 
+            simpson = simpson(count),
+            invsimp = 1/simpson,
+            evenness = shannon/log(richness),
+            n=sum(count)) %>%
+  pivot_longer(cols=c(richness, shannon, invsimp, simpson, evenness), 
+               names_to="metric") %>%
+ggplot(aes(x=n, y=value)) +
+  geom_point() +
+  geom_smooth() +
+  facet_wrap(~metric, nrow=4, scales="free_y")
 
-# Pielou Evenness
-```{r}
-evenness <- H/log(richness)
-evenness
-```
+ggsave("alpha_diversity_metrics_biof.tiff", width = 10, height = 10)
 
-```{r}
-metadata_all <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata.csv")
-metadata_all
-```
-
-```{r}
-alpha <- cbind(shannon = H, richness = richness, pielou = evenness, metadata_all)
-write.csv(alpha, "diversity_indices_all_samples.csv")
-#head(alpha)
-```
-
-```{r}
-plot.shan <- ggplot(alpha, aes(x = location, y = shannon, colour = location)) +
-geom_boxplot(size = 3) +
-ylab("Shannon's H'") + 
-xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
-theme_bw() +
-theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
-plot.shan
-ggsave("Shannon_Location_all_samples.tiff")
-```
-
-```{r}
-plot.rich <-ggplot(alpha, aes(x = location, y = richness, colour = location)) +
-geom_boxplot(size = 3) +
-ylab("Species Richness") +
-xlab("") +
-theme_bw() +
-theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
-plot.rich
-ggsave("Richness_Location_all_samples.tiff")
-```
-
-```{r}
-plot.even <- ggplot(alpha, aes(x = location, y = pielou, colour = location)) +
-geom_boxplot(size = 3) +
-ylab("Pielou's Evenness") +
-xlab("") +
-theme_bw() +
-theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
-plot.even
-ggsave("Pielou's_Evenness_Location_all_samples.tiff")
-```
-
-```{r}
-legend <- get_legend(plot.even)
-
-plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
-
-ggsave("Shannon_Richness_Eveness_all_samples.tiff")
+#Each point represents a sample, (Y) Value of metric & (X) Total number of sequences for each sample
 ```
 
 # SIMPER Analysis
 ```{r}
+# Biofilm, Sediment and Water Samples
+otu_table_all <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv", header=T, row.names=1, check.names=FALSE)
 
+## Transpose the data to have sample names on rows
+otu.table.diver.all <- t(otu_table_all)
+otu.table.diver.all <- as.data.frame(otu.table.diver.all)
+head(otu.table.diver.all)
+
+otu.table.diver.mdf.all <- as.matrix.data.frame(otu.table.diver.all)
+rownames(otu.table.diver.mdf.all) <- metadata$location
+
+otu.table.diver.bray.all <- vegdist(otu.table.diver.mdf.all, method="bray")
+otu.table.diver.bray.all
+
+# Simper
+simper_all <- simper_all(otu.table.diver.all, metadata$location, permutations=999)
+options(max.print=999999)
+summary(simper_all)
+dput(simper_all, file = "simp_all.txt")
+sim_all <- dget("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/simp_all.txt")
+summary(sim_all)
 ```
