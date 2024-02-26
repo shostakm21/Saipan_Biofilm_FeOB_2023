@@ -1569,16 +1569,24 @@ ggsave("NMDS_biof_only_depth_location.tiff", width = 10, height = 10)
 
 ## Sediment Only: By Location
 ```{r}
-df_meta_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
+df_meta_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_metadata_sed.csv")
 df_meta_sed
 
-df_sed <- read.csv("/)
-df2_sed <- read.csv("/")
-df3_sed
-df_otu_sed
-write.csv()
+df1_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_sed_only.csv")
+df1_sed
 
-df_otu_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
+df2_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df2_sed_only.csv")
+df2_sed
+
+df3_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df3_sed_only.csv")
+df3_sed
+
+df_otu_sed <- list(df1_sed, df2_sed, df3_sed)
+df_otu_sed
+
+write.table(df_otu_sed,"df_otu_sed.csv", sep=",", col.names=NA)
+
+df_otu_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_otu_sed.csv")
 df_otu_sed
 
 nmds_asv_otu_sed <- inner_join(df_meta_sed, df_otu_sed, by="sample_id")
@@ -1586,6 +1594,61 @@ nmds_asv_otu_sed
 
 write.table(nmds_asv_otu_sed, "nmds_asv_otu_sed_only.csv", sep=",", quote=F, col.names=NA)
 ```
+
+```{r}
+pc2 <- read.csv("Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_asv_otu_sed_only.csv")
+pc2
+
+#make community matrix: extract columns with ASV information
+#com2 <- pc2[,7:ncol(pc2)]
+#com2
+
+#turn ASV information into a matrix
+#m_com2 <- as.matrix(com2)
+```
+
+```{r}
+#Run NMDS using Bray-Curtis distance
+set.seed(123)
+nmds2 <- metaMDS(m_com2, distance="bray") #stress =  
+nmds2
+plot(nmds2)
+
+#access the specific points data of the NMDS plot & scores
+str(nmds2)
+nmds2$points
+scores(nmds2)
+
+#extract NMDS scores
+data.scores2 = as.data.frame(scores(nmds2)$sites)
+
+#add columns to data frame
+data.scores2$sample_id = pc2$sample_id
+data.scores2$location = pc2$location
+data.scores2$depth = pc2$depth
+data.scores2$metal_type = pc2$metal_type
+
+head(data.scores2)
+```
+
+```{r}
+xx12 = ggplot(data.scores2, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(shape = depth, color=location))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "Location", y = "NMDS2")
+xx12
+ggsave("NMDS_biof_only_sediment_location_depth.tiff", width = 10, height = 10)
+```
+
 
 ## Water Only: By Location
 ```{r}
@@ -1875,3 +1938,4 @@ sim_all <- dget("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan
 simper <- simper(m_com, group=pc$location, permutations = 999)
 simper
 dput(simper, file = "simp.txt")
+```
