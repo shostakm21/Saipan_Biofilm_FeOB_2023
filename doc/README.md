@@ -1,8 +1,6 @@
 ---
 title: "Saipan_dada2_Pipeline"
 author: "Maggie Shostak"
-date: "`r Sys.Date()`"
-output: html_document
 ---
 # Load all necessary packages: 
 ```{r}
@@ -205,8 +203,10 @@ library(Biostrings)
 # Read data into R
 otu_tab <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv")
 otu_tab
+
 tax_tab <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_tax_saipan.csv")
 tax_tab
+
 samples_df <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata.csv")
 samples_df
 ```
@@ -309,7 +309,7 @@ plot_richness(ps, measures=c("Chao1", "Shannon"), x="location", color="location"
 ## Just Shannon
 plot_richness(ps, measures=c("Shannon"), x="location", color="location") +
   geom_boxplot()
-ggsave("Chao1_Shannon_Saipan_All_Location.tiff", width=15, height=10)
+#ggsave("Chao1_Shannon_Saipan_All_Location.tiff", width=15, height=10)
 ```
 
 ```{r}
@@ -317,21 +317,15 @@ ggsave("Chao1_Shannon_Saipan_All_Location.tiff", width=15, height=10)
 ps.ord <- ordinate(ps, "NMDS", "bray")
 plot_ordination(ps, ps.ord, type="taxa", color="Phylum", shape= "Location", 
                   title="Saipan ASVs")
-```
 
-```{r}
 plot_ordination(ps, ps.ord, type="taxa", color="Phylum", 
                   title="Sapain ASVs", label="Phylum") + 
                   facet_wrap(~Phylum, 3)
-ggsave("Ordination_Phylum_Saipan_All.tiff", width=25, height=10)
-```
+#ggsave("Ordination_Phylum_Saipan_All.tiff", width=25, height=10)
 
-```{r}
 plot_ordination(ps, ps.ord, type="samples", color="Location", 
                   shape="depth", title="Samples") + geom_point(size=3)
-```
 
-```{r}
 plot_ordination(ps, ps.ord, type="split", color="Phylum", 
                   shape="Location", title="Biplot", label = "station") +  
   geom_point(size=3)
@@ -349,12 +343,10 @@ otu_rel_abund <- inner_join(metadata, otu_counts, by="sample_id") %>%
          values_to="taxon")
 otu_rel_abund
 
-#write.table(otu_rel_abund, "otu_rel_abund_saipan.csv", sep=",", quote=F, col.names=NA)
-```
+write.table(otu_rel_abund, "otu_rel_abund_saipan.csv", sep=",", quote=F, col.names=NA)
 
-```{r}
 otu_rel_abund <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_saipan.csv")
-#otu_rel_abund
+otu_rel_abund
 ```
 
 ## Other Metadata Tables
@@ -363,7 +355,7 @@ metadata_biof_sed_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/R
 #metadata_biof_sed_water
 
 metadata_depth_biofilm <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_depth_biofilm.csv")
-metadata_depth_biofilm
+#metadata_depth_biofilm
 
 metadata_depth_sediment <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_depth_sediment.csv")
 #metadata_depth_sediment
@@ -380,7 +372,7 @@ metadata_location_biofilm <- read.csv("/Users/maggieshostak/Desktop/Dissertation
 metadata_location_sediment <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_location_sediment.csv")
 #metadata_location_sediment
 
-#metadata_location_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_location_water.csv")
+metadata_location_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_location_water.csv")
 #metadata_location_water
 
 metadata_metal_type <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_metal_type.csv")
@@ -471,6 +463,8 @@ otu_rel_abund_biof_simper <- inner_join(metadata_location_biof_simper, otu_count
          values_to="taxon")
 #otu_rel_abund_biof_simper
 #write.table(otu_rel_abund_biof_simper, "otu_rel_abund_saipan_biof_simper.csv", sep=",", quote=F, col.names=NA)
+
+otu_rel_abund_biof_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_saipan_biof_simper.csv")
 ```
 
 ```{r}
@@ -528,7 +522,7 @@ otu_rel_abund_biof_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("Family_stacked_barchart_biof_simper.tiff", width=55, height=10, limitsize = FALSE)
+ggsave("Family_stacked_barchart_biof_simper.tiff", width=55, height=20, limitsize = FALSE)
 ```
 
 ### Coronado Biofilm vs Deep Coronado Biofilm
@@ -557,6 +551,8 @@ otu_rel_abund_biof_coronados_simper <- inner_join(metadata_biof_coronados_simper
          values_to="taxon")
 #otu_rel_abund_biof_coronados_simper
 #write.table(otu_rel_abund_biof_coronados_simper, "otu_rel_abund_biof_coronados_simper.csv", sep=",", quote=F, col.names=NA)
+
+otu_rel_abund_biof_coronados_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_biof_coronados_simper.csv")
 ```
 
 ```{r}
@@ -615,7 +611,7 @@ otu_rel_abund_biof_coronados_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_biof_coronados_simper.tiff", width=55, height=10, limitsize = FALSE)
+ggsave("family_stacked_barchart_biof_coronados_simper.tiff", width=60, height=20, limitsize = FALSE)
 ```
 
 ### Tank 1 vs Tank 3
@@ -644,6 +640,8 @@ otu_rel_abund_biof_T1T3_simper <- inner_join(metadata_biof_T1T3_simper, otu_coun
          values_to="taxon")
 #otu_rel_abund_biof_T1T3_simper
 #write.table(otu_rel_abund_biof_T1T3_simper, "otu_rel_abund_biof_T1T3_simper.csv", sep=",", quote=F, col.names=NA)
+
+otu_rel_abund_biof_T1T3_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_biof_T1T3_simper.csv")
 ```
 
 ```{r}
@@ -674,7 +672,7 @@ otu_rel_abund_biof_T1T3_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("class_stacked_barchart_biof_T1T3_simper.tiff", width=13, height=15)
+ggsave("class_stacked_barchart_biof_T1T3_simper.tiff", width=25, height=20)
 
 ### Order
 otu_rel_abund_biof_T1T3_simper %>%
@@ -689,6 +687,7 @@ otu_rel_abund_biof_T1T3_simper %>%
          y="Mean Relative Abundance (%)") +
     theme_classic()
 ggsave("order_stacked_barchart_biof_T1T3_simper.tiff", width=55, height=10, limitsize = FALSE)
+
 ### Family
 otu_rel_abund_biof_T1T3_simper %>%
   filter(level=="Family") %>%
@@ -729,6 +728,7 @@ otu_rel_abund_biof_EmCoro_simper <- inner_join(metadata_biof_EmCoro_simper, otu_
          values_to="taxon")
 #otu_rel_abund_biof_EmCoro_simper
 #write.table(otu_rel_abund_biof_EmCoro_simper, "otu_rel_abund_biof_EmCoro_simper.csv", sep=",", quote=F, col.names=NA)
+otu_rel_abund_biof_EmCoro_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_biof_EmCoro_simper.csv")
 ```
 
 ```{r}
@@ -759,7 +759,7 @@ otu_rel_abund_biof_EmCoro_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("class_stacked_barchart_biof_EmCoro_simper.tiff", width=13, height=15)
+ggsave("class_stacked_barchart_biof_EmCoro_simper.tiff", width=20, height=20)
 
 ### Order
 otu_rel_abund_biof_EmCoro_simper %>%
@@ -773,8 +773,7 @@ otu_rel_abund_biof_EmCoro_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_biof_EmCoro_simper.tiff", width=55, height=10, limitsize = FALSE)
-
+ggsave("order_stacked_barchart_biof_EmCoro_simper.tiff", width=35, height=10, limitsize = FALSE)
 
 ### Family
 otu_rel_abund_biof_EmCoro_simper %>%
@@ -816,6 +815,7 @@ otu_rel_abund_biof_D1SM_simper <- inner_join(metadata_biof_D1SM_simper, otu_coun
          values_to="taxon")
 #otu_rel_abund_biof_D1SM_simper
 #write.table(otu_rel_abund_biof_D1SM_simper, "otu_rel_abund_biof_D1SM_simper.csv", sep=",", quote=F, col.names=NA)
+otu_rel_abund_biof_D1SM_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_biof_D1SM_simper.csv")
 ```
 
 ```{r}
@@ -846,7 +846,7 @@ otu_rel_abund_biof_D1SM_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("class_stacked_barchart_biof_D1SM_simper.tiff", width=13, height=15)
+ggsave("class_stacked_barchart_biof_D1SM_simper.tiff", width=20, height=30, limitsize = FALSE)
 
 ### Order
 otu_rel_abund_biof_D1SM_simper %>%
@@ -901,7 +901,8 @@ otu_rel_abund_metal_type_simper <- inner_join(metadata_metal_type_simper, otu_co
          names_to="level",
          values_to="taxon")
 otu_rel_abund_metal_type_simper
-write.table(otu_rel_abund_metal_type_simper, "otu_rel_abund_metal_type_simper.csv", sep=",", quote=F, col.names=NA)
+#write.table(otu_rel_abund_metal_type_simper, "otu_rel_abund_metal_type_simper.csv", sep=",", quote=F, col.names=NA)
+otu_rel_abund_metal_type_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_metal_type_simper.csv")
 ```
 
 ```{r}
@@ -932,7 +933,7 @@ otu_rel_abund_metal_type_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("class_stacked_barchart_biof_metal_type_simper.tiff", width=13, height=15)
+ggsave("class_stacked_barchart_biof_metal_type_simper.tiff", width=30, height=20)
 
 ## Order
 otu_rel_abund_metal_type_simper %>%
@@ -1074,6 +1075,8 @@ otu_rel_abund_sed_coronados_simper <- inner_join(metadata_sed_coronados_simper, 
          values_to="taxon")
 #otu_rel_abund_sed_coronados_simper
 #write.table(otu_rel_abund_sed_coronados_simper, "otu_rel_abund_sed_coronados_simper.csv", sep=",", quote=F, col.names=NA)
+
+otu_rel_abund_sed_coronados_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_sed_coronados_simper.csv")
 ```
 
 ```{r}
@@ -1104,7 +1107,7 @@ otu_rel_abund_sed_coronados_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("class_stacked_barchart_sed_coronados_simper.tiff", width=13, height=15)
+ggsave("class_stacked_barchart_sed_coronados_simper.tiff", width=30, height=20)
 
 ## Order
 otu_rel_abund_sed_coronados_simper %>%
@@ -1223,15 +1226,15 @@ ggsave("family_stacked_barchart_water_simper.tiff", width=55, height=20, limitsi
 
 ## All Samples Depth Comparison
 ```{r}
-metadata_depth <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_depth_biofilm.csv")
-#metadata_depth
+metadata_depth <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_depth_biof_sed_water.csv")
+metadata_depth
 
 otu_counts_depth_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_depth_biof.csv") %>%
   pivot_longer(-ASV, names_to = "sample_id", values_to = "count")
-#otu_counts_depth_simper
+otu_counts_depth_simper
 
 taxonomy_depth_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_tax_depth_biof.csv")
-#taxonomy_depth_simper
+taxonomy_depth_simper
 ```
 
 ```{r}
@@ -1245,6 +1248,8 @@ otu_rel_abund_depth_simper <- inner_join(metadata_depth, otu_counts_depth_simper
          values_to="taxon")
 otu_rel_abund_depth_simper
 write.table(otu_rel_abund_depth_simper, "otu_rel_abund_saipan_depth_simper.csv", sep=",", quote=F, col.names=NA)
+
+otu_rel_abund_depth_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_saipan_depth_simper.csv")
 ```
 
 ```{r}
@@ -1274,7 +1279,7 @@ otu_rel_abund_depth_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("class_stacked_barchart_depth_simper.tiff", width=13, height=15)
+ggsave("class_stacked_barchart_depth_simper.tiff", width=30, height=20)
 
 ## Order
 otu_rel_abund_depth_simper %>%
@@ -1310,10 +1315,13 @@ ggsave("family_stacked_barchart_depth_simper.tiff", width=55, height=20, limitsi
 df_meta <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_otu_categories.csv")
 df_meta
 
+df_otu <-read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_otu.csv")
+df_otu
+
 nmds_asv_otu_all <- inner_join(df_meta, df_otu, by="sample_id")
 nmds_asv_otu_all
 
-write.table(nmds_asv_otu_all, "nmds_asv_otu_all.csv", sep=",", quote=F, col.names=NA)
+#write.table(nmds_asv_otu_all, "nmds_asv_otu_all.csv", sep=",", quote=F, col.names=NA)
 ```
 
 ```{r}
@@ -1408,14 +1416,16 @@ xx2 = ggplot(data.scores, aes(x = NMDS1, y = NMDS2)) +
        legend.key=element_blank()) +
  labs(x = "NMDS1", colour = "Depth", y = "NMDS2")
 xx2
-#ggsave("NMDS_all_samples_depth.tiff", width = 10, height = 10)
+ggsave("NMDS_all_samples_depth.tiff", width = 10, height = 10)
 ```
 
 ```{r}
+## Biofilm Only
 df_meta_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_biof_only_categories.csv")
-#df_meta_biof
+df_meta_biof
 
-df_otu_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/nmds_biof_")
+df_otu_biof <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df_otu_biof.csv")
+df_otu_biof
 
 nmds_asv_otu_biof <- inner_join(df_meta_biof, df_otu_biof, by="sample_id")
 nmds_asv_otu_biof
@@ -1475,7 +1485,7 @@ xx3 = ggplot(data.scores1, aes(x = NMDS1, y = NMDS2)) +
        legend.key=element_blank()) +
  labs(x = "NMDS1", colour = "Location", y = "NMDS2")
 xx3
-#ggsave("NMDS_biof_only_location.tiff", width = 10, height = 10)
+ggsave("NMDS_biof_only_location.tiff", width = 10, height = 10)
 ```
 
 ## Biofilm Only: By Metal Type
@@ -1492,9 +1502,9 @@ xx4 = ggplot(data.scores1, aes(x = NMDS1, y = NMDS2)) +
        legend.title = element_text(size = 14, colour = "black", face = "bold"),
        panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
        legend.key=element_blank()) +
- labs(x = "NMDS1", colour = "Metal Type", y = "NMDS2")
+ labs(x = "NMDS1", colour = "Location", y = "NMDS2")
 xx4
-ggsave("NMDS_biof_only_metal_type.tiff", width = 10, height = 10)
+ggsave("NMDS_biof_only_metal_type_location.tiff", width = 10, height = 10)
 ```
 
 ## Biofilm Only: By Depth
@@ -1513,7 +1523,23 @@ xx5 = ggplot(data.scores1, aes(x = NMDS1, y = NMDS2)) +
        legend.key=element_blank()) +
  labs(x = "NMDS1", colour = "Depth", y = "NMDS2")
 xx5
-#ggsave("NMDS_biof_only_depth.tiff", width = 10, height = 10)
+ggsave("NMDS_biof_only_depth.tiff", width = 10, height = 10)
+
+xx6 = ggplot(data.scores1, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = location, shape = depth))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "Location", y = "NMDS2")
+xx6
+ggsave("NMDS_biof_only_depth_location.tiff", width = 10, height = 10)
 ```
 
 ## Biofilm Only: Coronado vs Deep Coronado
@@ -1541,14 +1567,38 @@ xx5
 
 ```
 
-## All Sediment: By Location
+## Sediment Only: By Location
 ```{r}
+df_meta_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
+df_meta_sed
 
+df_sed <- read.csv("/)
+df2_sed <- read.csv("/")
+df3_sed
+df_otu_sed
+write.csv()
+
+df_otu_sed <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
+df_otu_sed
+
+nmds_asv_otu_sed <- inner_join(df_meta_sed, df_otu_sed, by="sample_id")
+nmds_asv_otu_sed
+
+write.table(nmds_asv_otu_sed, "nmds_asv_otu_sed_only.csv", sep=",", quote=F, col.names=NA)
 ```
 
-## All Water: By Location
+## Water Only: By Location
 ```{r}
+df_meta_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
+df_meta_water
 
+df_otu_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
+df_otu_water
+
+nmds_asv_otu_water <- inner_join(df_meta_water, df_otu_water, by="sample_id")
+nmds_asv_otu_water
+
+write.table(nmds_asv_otu_water, "nmds_asv_otu_water_only.csv", sep=",", quote=F, col.names=NA)
 ```
 
 # Statistical Analyses
@@ -1599,7 +1649,7 @@ ano_all2
 # Ecological Distance Matrices
 ```{r}
 #Diversity index value generating
-otu_table<-read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv",header=T,row.names=1,check.names=FALSE)
+otu_table <-read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv",header=T,row.names=1,check.names=FALSE)
 otu_table <- as.data.frame.matrix(otu_table)
 otu_table
 
@@ -1615,6 +1665,7 @@ unbias.simp <- rarefy(otu_table, 2) - 1
 
 ## Fisher alpha
 alpha <- fisher.alpha(otu_table)
+
 ## Species richness (S) and Pielou's evenness (J):
 S <- specnumber(otu_table)
 J <- H/log(S)
@@ -1824,4 +1875,3 @@ sim_all <- dget("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan
 simper <- simper(m_com, group=pc$location, permutations = 999)
 simper
 dput(simper, file = "simp.txt")
-```
