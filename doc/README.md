@@ -221,15 +221,11 @@ tax_tab <- tax_tab %>%
 
 samples_df <- samples_df %>%
   tibble::column_to_rownames("sample_id")
-```
 
-```{r}
 # Transform OTU & Tax table into matrices
 otu_tab <- as.matrix(otu_tab)
 tax_tab <- as.matrix(tax_tab)
-```
 
-```{r}
 #Transform into Phyloseq Objects
 ASV = otu_table(otu_tab, taxa_are_rows = TRUE)
 TAX = tax_table(tax_tab)
@@ -250,9 +246,7 @@ ps
 sample_names(ps)
 rank_names(ps)
 sample_variables(ps)
-```
 
-```{r}
 # Normalize number of reads in each sample using median sequencing depth
 total = median(sample_sums(ps))
 standf = function(x, t=total) round(t * (x / sum(x)))
@@ -349,6 +343,12 @@ otu_rel_abund <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Sai
 otu_rel_abund
 ```
 
+## OTU FeOB & SRB Relative Abundance Only
+```{r}
+
+```
+
+
 ## Other Metadata Tables
 ```{r}
 metadata_biof_sed_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_biof_sed_water.csv")
@@ -408,7 +408,7 @@ otu_rel_abund %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("class_stacked_barchart_saipan_all.tiff", width=25, height=10)
+ggsave("class_stacked_barchart_saipan_all.tiff", width=25, height=10)
 
 ## Order
 otu_rel_abund %>%
@@ -461,8 +461,8 @@ otu_rel_abund_biof_simper <- inner_join(metadata_location_biof_simper, otu_count
   pivot_longer(cols=c("Kingdom", "Phylum", "Class", "Order", "Family", "ASV"),
          names_to="level",
          values_to="taxon")
-#otu_rel_abund_biof_simper
-#write.table(otu_rel_abund_biof_simper, "otu_rel_abund_saipan_biof_simper.csv", sep=",", quote=F, col.names=NA)
+otu_rel_abund_biof_simper
+write.table(otu_rel_abund_biof_simper, "otu_rel_abund_saipan_biof_simper.csv", sep=",", quote=F, col.names=NA)
 
 otu_rel_abund_biof_simper <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_saipan_biof_simper.csv")
 ```
@@ -480,7 +480,7 @@ otu_rel_abund_biof_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("phylum_stacked_barchart_biof_simper.tiff", width=25, height=15)
+ggsave("phylum_stacked_barchart_biof_simper.tiff", width=25, height=15)
 
 ## Class
 otu_rel_abund_biof_simper %>%
@@ -494,7 +494,7 @@ otu_rel_abund_biof_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-#ggsave("class_stacked_barchart_biof_simper.tiff", width=25, height=15)
+ggsave("class_stacked_barchart_biof_simper.tiff", width=25, height=15)
 
 ## Order
 otu_rel_abund_biof_simper %>%
@@ -597,7 +597,7 @@ otu_rel_abund_biof_coronados_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_biof_coronados_simper.tiff", width=55, height=10, limitsize = FALSE)
+#ggsave("order_stacked_barchart_biof_coronados_simper.tiff", width=55, height=10, limitsize = FALSE)
 
 #Family
 otu_rel_abund_biof_coronados_simper %>%
@@ -611,7 +611,7 @@ otu_rel_abund_biof_coronados_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_biof_coronados_simper.tiff", width=60, height=20, limitsize = FALSE)
+#ggsave("family_stacked_barchart_biof_coronados_simper.tiff", width=60, height=20, limitsize = FALSE)
 ```
 
 ### Tank 1 vs Tank 3
@@ -672,7 +672,7 @@ otu_rel_abund_biof_T1T3_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("class_stacked_barchart_biof_T1T3_simper.tiff", width=25, height=20)
+#ggsave("class_stacked_barchart_biof_T1T3_simper.tiff", width=25, height=20)
 
 ### Order
 otu_rel_abund_biof_T1T3_simper %>%
@@ -686,7 +686,7 @@ otu_rel_abund_biof_T1T3_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_biof_T1T3_simper.tiff", width=55, height=10, limitsize = FALSE)
+#ggsave("order_stacked_barchart_biof_T1T3_simper.tiff", width=55, height=10, limitsize = FALSE)
 
 ### Family
 otu_rel_abund_biof_T1T3_simper %>%
@@ -700,7 +700,7 @@ otu_rel_abund_biof_T1T3_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_biof_T1T3_simper.tiff", width=55, height=10, limitsize = FALSE)
+#ggsave("family_stacked_barchart_biof_T1T3_simper.tiff", width=55, height=10, limitsize = FALSE)
 ```
 
 ### Emily vs Coronado
@@ -759,7 +759,7 @@ otu_rel_abund_biof_EmCoro_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("class_stacked_barchart_biof_EmCoro_simper.tiff", width=20, height=20)
+#ggsave("class_stacked_barchart_biof_EmCoro_simper.tiff", width=20, height=20)
 
 ### Order
 otu_rel_abund_biof_EmCoro_simper %>%
@@ -773,7 +773,7 @@ otu_rel_abund_biof_EmCoro_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_biof_EmCoro_simper.tiff", width=35, height=10, limitsize = FALSE)
+#ggsave("order_stacked_barchart_biof_EmCoro_simper.tiff", width=35, height=10, limitsize = FALSE)
 
 ### Family
 otu_rel_abund_biof_EmCoro_simper %>%
@@ -787,7 +787,7 @@ otu_rel_abund_biof_EmCoro_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_biof_EmCoro_simper.tiff", width=55, height=10, limitsize = FALSE)
+#ggsave("family_stacked_barchart_biof_EmCoro_simper.tiff", width=55, height=10, limitsize = FALSE)
 ```
 
 ### Diahatsu 1 vs Shoan Maru
@@ -846,7 +846,7 @@ otu_rel_abund_biof_D1SM_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("class_stacked_barchart_biof_D1SM_simper.tiff", width=20, height=30, limitsize = FALSE)
+#ggsave("class_stacked_barchart_biof_D1SM_simper.tiff", width=20, height=30, limitsize = FALSE)
 
 ### Order
 otu_rel_abund_biof_D1SM_simper %>%
@@ -860,7 +860,7 @@ otu_rel_abund_biof_D1SM_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_biof_D1SM_simper.tiff", width=55, height=30, limitsize = FALSE)
+#ggsave("order_stacked_barchart_biof_D1SM_simper.tiff", width=55, height=30, limitsize = FALSE)
 
 ## Family
 otu_rel_abund_biof_D1SM_simper %>%
@@ -874,7 +874,7 @@ otu_rel_abund_biof_D1SM_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_biof_D1SM_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("family_stacked_barchart_biof_D1SM_simper.tiff", width=55, height=20, limitsize = FALSE)
 ```
 
 ## Aluminun vs Steel vs Iron
@@ -919,7 +919,7 @@ otu_rel_abund_metal_type_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("phylum_stacked_barchart_biof_metal_type_simper.tiff", width=13, height=15)
+#ggsave("phylum_stacked_barchart_biof_metal_type_simper.tiff", width=13, height=15)
 
 ### Class
 otu_rel_abund_metal_type_simper %>%
@@ -933,7 +933,7 @@ otu_rel_abund_metal_type_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("class_stacked_barchart_biof_metal_type_simper.tiff", width=30, height=20)
+#ggsave("class_stacked_barchart_biof_metal_type_simper.tiff", width=30, height=20)
 
 ## Order
 otu_rel_abund_metal_type_simper %>%
@@ -947,7 +947,7 @@ otu_rel_abund_metal_type_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_biof_metal_type_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("order_stacked_barchart_biof_metal_type_simper.tiff", width=55, height=20, limitsize = FALSE)
 
 ## Family
 otu_rel_abund_metal_type_simper %>%
@@ -961,7 +961,7 @@ otu_rel_abund_metal_type_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_biof_metal_type_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("family_stacked_barchart_biof_metal_type_simper.tiff", width=55, height=20, limitsize = FALSE)
 ```
 
 ## Sediment Samples Only
@@ -1033,7 +1033,7 @@ otu_rel_abund_sed_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_sed_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("order_stacked_barchart_sed_simper.tiff", width=55, height=20, limitsize = FALSE)
 
 ## Family
 otu_rel_abund_sed_simper %>%
@@ -1047,7 +1047,7 @@ otu_rel_abund_sed_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_sed_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("family_stacked_barchart_sed_simper.tiff", width=55, height=20, limitsize = FALSE)
 ```
 
 ### Coronado Sediment vs Deep Coronado Sediment
@@ -1107,7 +1107,7 @@ otu_rel_abund_sed_coronados_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("class_stacked_barchart_sed_coronados_simper.tiff", width=30, height=20)
+#ggsave("class_stacked_barchart_sed_coronados_simper.tiff", width=30, height=20)
 
 ## Order
 otu_rel_abund_sed_coronados_simper %>%
@@ -1121,7 +1121,7 @@ otu_rel_abund_sed_coronados_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_sed_coronados_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("order_stacked_barchart_sed_coronados_simper.tiff", width=55, height=20, limitsize = FALSE)
 
 ## Family
 otu_rel_abund_sed_coronados_simper %>%
@@ -1135,7 +1135,7 @@ otu_rel_abund_sed_coronados_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_sed_coronados_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("family_stacked_barchart_sed_coronados_simper.tiff", width=55, height=20, limitsize = FALSE)
 ```
 
 ## Water Samples Only
@@ -1207,7 +1207,7 @@ otu_rel_abund_water_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("order_stacked_barchart_water_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("order_stacked_barchart_water_simper.tiff", width=55, height=20, limitsize = FALSE)
 
 ## Family
 otu_rel_abund_water_simper %>%
@@ -1221,8 +1221,95 @@ otu_rel_abund_water_simper %>%
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
-ggsave("family_stacked_barchart_water_simper.tiff", width=55, height=20, limitsize = FALSE)
+#ggsave("family_stacked_barchart_water_simper.tiff", width=55, height=20, limitsize = FALSE)
 ```
+
+# All Sample: Classified as Ship (Biofilm), Sediment, Water Only [SSW]
+```{r}
+metadata_SSW <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_SSW.csv")
+metadata_SSW
+
+otu_counts_SSW <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv") %>%
+  pivot_longer(-ASV, names_to = "sample_id", values_to = "count")
+otu_counts_SSW
+
+taxonomy_SSW <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_tax_saipan.csv")
+taxonomy_SSW
+```
+
+```{r}
+otu_rel_abund_SSW <- inner_join(metadata_SSW, otu_counts_SSW, by="sample_id") %>%
+  inner_join(., taxonomy_SSW, by="ASV") %>%
+  group_by(sample_id) %>%
+  mutate(rel_abund = count / sum(count)) %>%
+  ungroup() %>%
+  pivot_longer(cols=c("Kingdom", "Phylum", "Class", "Order", "Family", "ASV"),
+         names_to="level",
+         values_to="taxon")
+otu_rel_abund_SSW
+write.table(otu_rel_abund_SSW, "otu_rel_abund_SSW.csv", sep=",", quote=F, col.names=NA)
+
+otu_rel_abund_SSW <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_rel_abund_SSW.csv")
+```
+
+```{r}
+## Phylum
+otu_rel_abund_SSW %>%
+  filter(level=="Phylum") %>%
+  group_by(sample_id, depth, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(depth, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=depth, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=depth, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("phylum_stacked_barchart_SSW.tiff", width=27, height=15)
+
+## Class
+otu_rel_abund_SSW %>%
+  filter(level=="Class") %>%
+  group_by(sample_id, depth, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(depth, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=depth, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=depth, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("class_stacked_barchart_SSW.tiff", width=30, height=20)
+
+## Order
+otu_rel_abund_SSW %>%
+  filter(level=="Order") %>%
+  group_by(sample_id, depth, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(depth, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=depth, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=depth, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("order_stacked_barchart_SSW.tiff", width=55, height=20, limitsize = FALSE)
+
+## Family
+otu_rel_abund_SSW %>%
+  filter(level=="Family") %>%
+  group_by(sample_id, depth, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(depth, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=depth, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=depth, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("family_stacked_barchart_SSW.tiff", width=55, height=20, limitsize = FALSE)
+```
+
 
 ## All Samples Depth Comparison
 ```{r}
@@ -1283,7 +1370,7 @@ ggsave("class_stacked_barchart_depth_simper.tiff", width=30, height=20)
 
 ## Order
 otu_rel_abund_depth_simper %>%
-  filter(level=="Class") %>%
+  filter(level=="Order") %>%
   group_by(sample_id, depth, taxon) %>%
   summarize(rel_abund = sum(rel_abund)) %>%
   group_by(depth, taxon) %>%
@@ -1321,7 +1408,7 @@ df_otu
 nmds_asv_otu_all <- inner_join(df_meta, df_otu, by="sample_id")
 nmds_asv_otu_all
 
-#write.table(nmds_asv_otu_all, "nmds_asv_otu_all.csv", sep=",", quote=F, col.names=NA)
+write.table(nmds_asv_otu_all, "nmds_asv_otu_all.csv", sep=",", quote=F, col.names=NA)
 ```
 
 ```{r}
@@ -1430,7 +1517,7 @@ df_otu_biof
 nmds_asv_otu_biof <- inner_join(df_meta_biof, df_otu_biof, by="sample_id")
 nmds_asv_otu_biof
 
-#write.table(nmds_asv_otu_biof, "nmds_asv_otu_biof_only.csv", sep=",", quote=F, col.names=NA)
+write.table(nmds_asv_otu_biof, "nmds_asv_otu_biof_only.csv", sep=",", quote=F, col.names=NA)
 ```
 
 ```{r}
@@ -1544,27 +1631,27 @@ ggsave("NMDS_biof_only_depth_location.tiff", width = 10, height = 10)
 
 ## Biofilm Only: Coronado vs Deep Coronado
 ```{r}
-
+xx7
 ```
 
 ## Biofilm Only: Emily vs Coronado vs Deep Coronado
 ```{r}
-
+xx8
 ```
 
 ## Biofilm Only: Tank 1 vs Tank 3
 ```{r}
-
+xx9
 ```
 
 ## Biofilm Only: Diahatsu 1 vs Shoan Maru
 ```{r}
-
+xx10
 ```
 
 ## Deep Coronado Biof/Sed/Water vs Coronado Biof/Sed/Water
 ```{r}
-
+xx11
 ```
 
 ## Sediment Only: By Location
@@ -1649,10 +1736,9 @@ xx12
 ggsave("NMDS_biof_only_sediment_location_depth.tiff", width = 10, height = 10)
 ```
 
-
 ## Water Only: By Location
 ```{r}
-df_meta_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
+df_meta_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata_depth_water.csv")
 df_meta_water
 
 df_otu_water <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/
@@ -1798,8 +1884,6 @@ otu_count_all %>%
   group_by(sample_id) %>%
   summarize(richness = richness(count),
             shannon = shannon(count), 
-            simpson = simpson(count),
-            invsimp = 1/simpson,
             evenness = shannon/log(richness),
             n=sum(count))
 ```
@@ -1809,12 +1893,10 @@ otu_count_all %>%
 otu_count_all %>%
   group_by(sample_id) %>%
   summarize(richness = richness(count),
-            shannon = shannon(count), 
-            simpson = simpson(count),
-            invsimp = 1/simpson,
+            shannon = shannon(count),
             evenness = shannon/log(richness),
             n=sum(count)) %>%
-  pivot_longer(cols=c(richness, shannon, invsimp, simpson, evenness), 
+  pivot_longer(cols=c(richness, shannon, evenness), 
                names_to="metric") %>%
 ggplot(aes(x=n, y=value)) +
   geom_point() +
@@ -1883,8 +1965,6 @@ otu_count_biof %>%
   group_by(sample_id) %>%
   summarize(richness = richness(count),
             shannon = shannon(count), 
-            simpson = simpson(count),
-            invsimp = 1/simpson,
             evenness = shannon/log(richness),
             n=sum(count))
 ```
@@ -1895,11 +1975,9 @@ otu_count_biof %>%
   group_by(sample_id) %>%
   summarize(richness = richness(count),
             shannon = shannon(count), 
-            simpson = simpson(count),
-            invsimp = 1/simpson,
             evenness = shannon/log(richness),
             n=sum(count)) %>%
-  pivot_longer(cols=c(richness, shannon, invsimp, simpson, evenness), 
+  pivot_longer(cols=c(richness, shannon, evenness), 
                names_to="metric") %>%
 ggplot(aes(x=n, y=value)) +
   geom_point() +
