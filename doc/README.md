@@ -2017,3 +2017,113 @@ simper <- simper(m_com, group=pc$location, permutations = 999)
 simper
 dput(simper, file = "simp.txt")
 ```
+
+
+# RE-DO ANALYSIS
+```{r}
+# Diversity Index Value Generating
+## Biofilm & Sediment & Water Samples
+otu_table_re <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan.csv", header=T, row.names=1, check.names=FALSE)
+
+### Transpose the data to have sample names on rows
+otu.table.diver.re <- t(otu_table_re)
+otu.table.diver.re <- as.data.frame(otu.table.diver.re)
+head(otu.table.diver.re)
+```
+
+```{r}
+# Biofilm Only
+otu_table_bio_re <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/asv_otu_saipan_biof_simper.csv", header=T, row.names=1, check.names=FALSE)
+otu_table_bio_re
+
+## Transpose the data to have sample names on rows
+otu.table.diver.bio.re <- t(otu_table_bio_re)
+otu.table.diver.bio.re <- as.data.frame(otu.table.diver.bio.re)
+head(otu.table.diver.bio.re)
+```
+
+```{r}
+# Ecological Distance Matrices & Rarefaction
+library(tidyverse)
+
+df1_re <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df1.csv")
+#df1_re
+df2_re <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/df2.csv")
+#df2_re
+df_list_re <- list(df1_re, df2_re)
+#df_list_re
+
+otu_count_all_re <- Reduce(function(x, y) merge(x, y, all=TRUE), df_list_re) %>%
+  pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
+
+write.table(otu_count_all_re, "otu_count_all_re.csv", sep=",", quote=F, col.names=NA)
+```
+
+```{r}
+otu_count_all_re <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/otu_count_all_re.csv")
+
+otu_count_all_re %>%
+  group_by(sample_id) %>%
+  mutate(total = sum(count)) %>%
+  filter(total > 5000) %>%
+  group_by(ASV) %>%
+  mutate(total=sum(count)) %>% 
+  filter(total != 0) %>%
+  as.data.frame()
+#Going to set threshold at 5000
+```
+
+```{r}
+# Shannon
+data(otu.table.diver.re)
+H<-diversity(otu.table.diver.re)
+H
+
+richness <- specnumber(otu.table.diver.re)
+richness
+
+evenness <- H/log(richness)
+evenness
+
+metadata_all <- read.csv("/Users/maggieshostak/Desktop/Dissertation/RStudio_Saipan/Saipan/data/metadata.csv")
+metadata_all
+
+alpha <- cbind(shannon = H, richness = richness, pielou = eveness, metadata_all)
+write.csv(alpha, "diversity_indices_bio_sed_water_re.csv")
+head(alpha)
+
+plot.shan <- ggplot(alpha, aes(x = location, y = shannon, colour = location)) +
+geom_point(size = 3) +
+ylab("Shannon's H'") + 
+xlab("") +
+ggtitle("Shannon's Diversity - Samples Across Site")+
+theme_bw() +
+theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
+plot.shan
+ggsave("Shannon_Location_bio_sed_water.tiff")
+
+plot.rich <-ggplot(alpha, aes(x = location, y = richness, colour = location)) +
+geom_point(size = 3) +
+ylab("Species Richness") +
+xlab("") +
+theme_bw() +
+theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
+plot.rich
+ggsave("Richness_Location_bio_sed_water.tiff")
+
+plot.even <- ggplot(alpha, aes(x = location, y = pielou, colour = location)) +
+geom_point(size = 3) +
+ylab("Pielou's Evenness") +
+xlab("") +
+theme_bw() +
+theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
+plot.even
+ggsave("Pielou's_Evenness_Location_bio_water.tiff")
+
+legend <- get_legend(plot.even)
+
+plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
+
+ggsave("Shannon_Richness_Eveness_bio_sed_water.tiff")
+```
+
