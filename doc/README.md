@@ -19,17 +19,12 @@ author: "Maggie Shostak"
 library(dada2)
 #library(decontam)
 library(rmarkdown)
-library(BiocGenerics)
-library(phyloseq); packageVersion("phyloseq")
-library(Biostrings); packageVersion("Biostrings")
 library(ggplot2); packageVersion("ggplot2")
 library(devtools)
 library(vegan)
 library(dbplyr)
 library(microbiome)
 library(tidyverse)
-library(DECIPHER)
-library(phangorn)
 ```
 
 ```{r}
