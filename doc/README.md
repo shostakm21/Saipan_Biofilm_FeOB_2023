@@ -1,6 +1,6 @@
 ---
-title: "Saipan Dada2 Pipeline"
-author: "Maggie Shostak"
+Title: "Saipan Dada2 Pipeline"
+Author: "Maggie Shostak"
 ---
 # Load all necessary packages: 
 ```{r}
