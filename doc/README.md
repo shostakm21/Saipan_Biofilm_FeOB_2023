@@ -1,8 +1,8 @@
----
-Title: "Saipan Dada2 Pipeline"
-Author: "Maggie Shostak"
----
-# Load all necessary packages: 
+
+# Title: "Saipan Dada2 Pipeline"
+## Author: "Maggie Shostak"
+
+## Load all necessary packages: 
 ```{r}
 #if (!requireNamespace("BiocManager", quietly = TRUE))
   #install.packages("BiocManager")
