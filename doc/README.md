@@ -736,149 +736,133 @@ head(alpha)
 ## Plot Diversity Boxplots: Sample Location
 ```{r}
 plot.shan <- ggplot(alpha, aes(x = location, y = shannon, colour = location)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Location_bio_sed_water.tiff")
 
 plot.rich <-ggplot(alpha, aes(x = location, y = richness, colour = location)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Richness_Location_bio_sed_water.tiff")
 
 plot.even <- ggplot(alpha, aes(x = location, y = pielou, colour = location)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.even
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Pielou's_Evenness_Location_bio_water.tiff")
 
 legend <- get_legend(plot.even)
 
 plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Richness_Eveness_all.tiff")
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_all.tiff")
 ```
 
 ## Plot Diversity Boxplots: Sample Type
 ```{r}
 plot.shan <- ggplot(alpha, aes(x = sample_type, y = shannon, colour = sample_type)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Location_bio_sed_water.tiff")
 
 plot.rich <-ggplot(alpha, aes(x = sample_type, y = richness, colour = sample_type)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Richness_Location_bio_sed_water.tiff")
 
 plot.even <- ggplot(alpha, aes(x = sample_type, y = pielou, colour = sample_type)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.even
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Pielou's_Evenness_Location_bio_water.tiff")
 
 legend <- get_legend(plot.even)
 
 plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Richness_Eveness_sample_type_all.tiff")
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_sample_type_all.tiff")
 ```
 
 ## Plot Diversity Boxplots: Sample Depth
 ```{r}
 plot.shan <- ggplot(alpha, aes(x = depth, y = shannon, colour = depth)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Location_bio_sed_water.tiff")
 
 plot.rich <-ggplot(alpha, aes(x = depth, y = richness, colour = depth)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Richness_Location_bio_sed_water.tiff")
 
 plot.even <- ggplot(alpha, aes(x = depth, y = pielou, colour = depth)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.even
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Pielou's_Evenness_Location_bio_water.tiff")
 
 legend <- get_legend(plot.even)
 
 plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Richness_Eveness_depth_all.tiff")
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_depth_all.tiff")
 ```
 
 ## Plot Diversity Boxplots: Metal Type
 ```{r}
 plot.shan <- ggplot(alpha, aes(x = metal_type, y = shannon, colour = metal_type)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
-#ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Location_bio_sed_water.tiff")
 
 plot.rich <-ggplot(alpha, aes(x = metal_type, y = richness, colour = metal_type)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
-#ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Richness_Location_bio_sed_water.tiff")
 
 plot.even <- ggplot(alpha, aes(x = metal_type, y = pielou, colour = metal_type)) +
-geom_boxplot(size = 1) +
+geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.even
-#ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Pielou's_Evenness_Location_bio_water.tiff")
 
 legend <- get_legend(plot.even)
 
 plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Richness_Eveness_metal_type_all.tiff")
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_metal_type_all.tiff")
 ```
 -----------------------------------------------------------------------
 NEED TO MAKE EXCEL SHEETS!!
@@ -960,7 +944,7 @@ ggplot(aes(x=n, y=value, color= location)) +
   geom_boxplot() +
   facet_wrap(~metric, nrow=4, scales="free_y")
 
-ggsave("/Users/maggieshostak/Desktop/RStudio_Saipain_Data/results/alpha_diversity_metrics_biof.tiff", width = 10, height = 10)
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/alpha_diversity_metrics_biof.tiff", width = 10, height = 10)
 
 #Each point represents a sample, (n) Sum of Count, (X) Total number of sequences for each sample & (Y) Value of diversity metric
 ```
@@ -979,7 +963,7 @@ ggplot(aes(x=n, y=value, color= sample_id,fill=sample_id)) +
   geom_point() +
   facet_wrap(~metric, nrow=4, scales="free_y")
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/alpha_diversity_metrics_biof.tiff", width = 30, height = 30)
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/alpha_diversity_metrics_biof.tiff", width = 30, height = 30)
 
 #Each point represents a sample, (Y) Value of metric & (X) Total number of sequences for each sample
 ```
@@ -1012,7 +996,6 @@ plot.shan <- ggplot(alpha_biof, aes(x = location, y = shannon, colour = location
 geom_boxplot(size = 1) +
 ylab("Shannon's H'") + 
 xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
@@ -1037,7 +1020,7 @@ legend <- get_legend(plot.even)
 
 plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Richness_Eveness_biof.tiff")
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_biof.tiff")
 ```
 
 CODE NOT RUN YET 10/21/2024
@@ -1047,7 +1030,6 @@ plot.shan <- ggplot(alpha_biof, aes(x = metal_type, y = shannon, colour = metal_
 geom_boxplot(size = 1) +
 ylab("Shannon's H'") + 
 xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
@@ -1072,7 +1054,7 @@ legend <- get_legend(plot.even)
 
 plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Richness_Eveness_biof_metaL_type.tiff")
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_biof_metaL_type.tiff")
 ```
 
 CODE NOT RUN YET 10/21/2024
@@ -1082,7 +1064,6 @@ plot.shan <- ggplot(alpha_biof, aes(x = depth, y = shannon, colour = depth)) +
 geom_boxplot(size = 1) +
 ylab("Shannon's H'") + 
 xlab("") +
-ggtitle("Shannon's Diversity - Samples Across Site")+
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
@@ -1107,7 +1088,7 @@ legend <- get_legend(plot.even)
 
 plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/Shannon_Richness_Eveness_biof_depth.tiff")
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_biof_depth.tiff")
 ```
 
 CODE NOT RUN YET 10/21/2024
