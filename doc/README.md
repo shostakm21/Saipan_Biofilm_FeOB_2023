@@ -495,6 +495,93 @@ otu_rel_abund_SSW %>%
 ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/family_stacked_barchart_SSW.tiff", width=55, height=20, limitsize = FALSE)
 ```
 
+## Barchart: Biofilm Only
+```{r}
+metadata_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/metadata_biofilm.csv")
+metadata_biof
+
+otu_counts_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/asv_otu_biof.csv") %>%
+  pivot_longer(-ASV, names_to = "sample_id", values_to = "count")
+otu_counts_biof
+
+taxonomy_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/asv_tax_biof.csv")
+taxonomy_biof
+```
+
+```{r}
+otu_rel_abund_biof <- inner_join(metadata_biof, otu_counts_biof, by="sample_id") %>%
+  inner_join(., taxonomy_biof, by="ASV") %>%
+  group_by(sample_id) %>%
+  mutate(rel_abund = count / sum(count)) %>%
+  ungroup() %>%
+  pivot_longer(cols=c("Kingdom", "Phylum", "Class", "Order", "Family", "ASV"),
+         names_to="level",
+         values_to="taxon")
+otu_rel_abund_biof
+
+write.table(otu_rel_abund_biof,"/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_rel_abund_biof.csv", sep=",", quote=F, col.names=NA)
+
+otu_rel_abund_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_rel_abund_biof.csv")
+```
+
+```{r}
+## Phylum
+otu_rel_abund_biof %>%
+  filter(level=="Phylum") %>%
+  group_by(sample_id, sample_type, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(sample_type, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/phylum_stacked_barchart_biof.tiff", width=20, height=15)
+
+## Class
+otu_rel_abund_biof %>%
+  filter(level=="Class") %>%
+  group_by(sample_id, sample_type, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(sample_type, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/class_stacked_barchart_biof.tiff", width=30, height=20)
+
+## Order
+otu_rel_abund_biof %>%
+  filter(level=="Order") %>%
+  group_by(sample_id, sample_type, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(sample_type, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/order_stacked_barchart_biof.tiff", width=55, height=20, limitsize = FALSE)
+
+## Family
+otu_rel_abund_biof %>%
+  filter(level=="Family") %>%
+  group_by(sample_id, sample_type, taxon) %>%
+  summarize(rel_abund = sum(rel_abund)) %>%
+  group_by(sample_type, taxon) %>%
+  summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
+  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+    labs(x=NULL, 
+         y="Mean Relative Abundance (%)") +
+    theme_classic()
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/family_stacked_barchart_biof.tiff", width=55, height=20, limitsize = FALSE)
+```
+
 # Non-multidimensional Scaling (NMDS Plots): All Samples
 ```{r}
 df_meta <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/metadata_saipan.csv")
@@ -581,6 +668,111 @@ xx1
 ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/NMDS_all_samples_sample_type.tiff", width = 10, height = 10)
 ```
 
+# Non-multidimensional Scaling (NMDS Plots): Biofilm Only
+```{r}
+df_meta_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/metadata_biofilm.csv")
+df_meta_biof
+
+df_otu_biof <-read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_biof_saipan.csv", row.names=1)
+df_otu_biof
+
+nmds_asv_otu_biof <- inner_join(df_meta_biof, df_otu_biof, by="sample_id")
+nmds_asv_otu_biof
+
+write.table(nmds_asv_otu_biof, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/nmds_asv_otu_biof.csv", sep=",", quote=F, col.names=NA)
+```
+
+```{r}
+pc_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/nmds_asv_otu_biof.csv")
+pc_biof
+
+#make community matrix: extract columns with ASV information
+com_biof <- pc_biof[,7:ncol(pc_biof)]
+com_biof
+
+#turn ASV information into a matrix
+m_com_biof <- as.matrix(com_biof)
+
+#Run NMDS using Bray-Curtis distance
+set.seed(123)
+nmds_biof <- metaMDS(m_com_biof, distance="bray") #stress = 0.1244532 
+nmds_biof
+plot(nmds_biof)
+
+#access the specific points data of the NMDS plot & scores
+str(nmds_biof)
+nmds_biof$points
+scores(nmds_biof)
+
+#extract NMDS scores
+data.scores.biof = as.data.frame(scores(nmds_biof)$sites)
+
+#add columns to data frame
+data.scores.biof$sample_id = pc_biof$sample_id
+data.scores.biof$location = pc_biof$location
+data.scores.biof$depth = pc_biof$depth
+data.scores.biof$sample_type = pc_biof$sample_type
+data.scores.biof$metal_type = pc_biof$metal_type
+
+head(data.scores.biof)
+```
+
+```{r}
+xxbiof = ggplot(data.scores.biof, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = location))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "location", y = "NMDS2")
+xxbiof
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/NMDS_biof_samples_location.tiff", width = 10, height = 10)
+```
+
+```{r}
+xxbiof = ggplot(data.scores.biof, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = depth))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "location", y = "NMDS2")
+xxbiof
+
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/NMDS_biof_depth.tiff", width = 10, height = 10)
+```
+
+```{r}
+xxbiof = ggplot(data.scores.biof, aes(x = NMDS1, y = NMDS2)) +
+ geom_point(size = 3, aes(colour = metal_type))+
+  scale_fill_discrete()+
+  ggtitle("NMDS Ordination - Samples Across Site")+
+ theme(axis.text.y = element_text(colour = "black", size = 10, face = "bold"),
+       axis.text.x = element_text(colour = "black", face = "bold", size = 12),
+       legend.text = element_text(size = 12, face ="bold", colour ="black"),
+       legend.position = "right", axis.title.y = element_text(face = "bold", size = 14),
+       axis.title.x = element_text(face = "bold", size = 14, colour = "black"),
+       legend.title = element_text(size = 14, colour = "black", face = "bold"),
+       panel.background = element_blank(), panel.border = element_rect(colour = "black", fill = NA, size = 1.5),
+       legend.key=element_blank()) +
+ labs(x = "NMDS1", colour = "location", y = "NMDS2")
+xxbiof
+
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/NMDS_biof_metal_type.tiff", width = 10, height = 10)
+```
+
 # Statistical Analyses
 ## Anosim
 ```{r}
@@ -619,6 +811,35 @@ ano_all2
 
 # ANOSIM statistic R: 0.1617 
       # Significance: 1e-04 
+```
+
+```{r}
+# Biofilm Only: by Location
+pc_ano_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/nmds_asv_otu_biof.csv")
+pc_ano_biof
+
+com_ano_biof = pc_ano_biof[,7:ncol(pc_ano_biof)]
+m_com_ano_biof = as.matrix(com_ano_biof)
+ano_biof = anosim(m_com_ano_biof, pc_ano_biof$location, distance = "bray", permutations = 9999)
+ano_biof
+
+#ANOSIM statistic R: 0.4101 
+      #Significance: 1e-04 
+```
+
+```{r}
+# Biofilm Only: By Metal Type
+
+pc_ano_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/nmds_asv_otu_biof.csv")
+pc_ano_biof
+
+com_ano_biof = pc_ano_biof[,7:ncol(pc_ano_biof)]
+m_com_ano_biof = as.matrix(com_ano_biof)
+ano_biof = anosim(m_com_ano_biof, pc_ano_biof$metal_type, distance = "bray", permutations = 9999)
+ano_biof
+
+#ANOSIM statistic R: 0.02644 
+      #Significance: 0.3754
 ```
 
 # Ecological Distance Matrices
