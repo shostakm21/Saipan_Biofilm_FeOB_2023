@@ -519,7 +519,7 @@ otu_rel_abund_biof <- inner_join(metadata_biof, otu_counts_biof, by="sample_id")
          values_to="taxon")
 otu_rel_abund_biof
 
-write.table(otu_rel_abund_biof,"/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_rel_abund_biof.csv", sep=",", quote=F, col.names=NA)
+#write.table(otu_rel_abund_biof,"/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_rel_abund_biof.csv", sep=",", quote=F, col.names=NA)
 
 otu_rel_abund_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_rel_abund_biof.csv")
 ```
@@ -528,12 +528,12 @@ otu_rel_abund_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/pos
 ## Phylum
 otu_rel_abund_biof %>%
   filter(level=="Phylum") %>%
-  group_by(sample_id, sample_type, taxon) %>%
+  group_by(sample_id, location, taxon) %>%
   summarize(rel_abund = sum(rel_abund)) %>%
-  group_by(sample_type, taxon) %>%
+  group_by(location, taxon) %>%
   summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
-  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
-  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+  ggplot(aes(x=location, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=location, y=mean_rel_abund), colour="black", stroke=10) +
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
@@ -541,13 +541,13 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/phylum_sta
 
 ## Class
 otu_rel_abund_biof %>%
-  filter(level=="Class") %>%
-  group_by(sample_id, sample_type, taxon) %>%
+ filter(level=="Class") %>%
+  group_by(sample_id, location, taxon) %>%
   summarize(rel_abund = sum(rel_abund)) %>%
-  group_by(sample_type, taxon) %>%
+  group_by(location, taxon) %>%
   summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
-  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
-  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+  ggplot(aes(x=location, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=location, y=mean_rel_abund), colour="black", stroke=10) +
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
@@ -555,13 +555,13 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/class_stac
 
 ## Order
 otu_rel_abund_biof %>%
-  filter(level=="Order") %>%
-  group_by(sample_id, sample_type, taxon) %>%
+filter(level=="Order") %>%
+  group_by(sample_id, location, taxon) %>%
   summarize(rel_abund = sum(rel_abund)) %>%
-  group_by(sample_type, taxon) %>%
+  group_by(location, taxon) %>%
   summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
-  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
-  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+  ggplot(aes(x=location, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=location, y=mean_rel_abund), colour="black", stroke=10) +
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
@@ -569,13 +569,13 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/order_stac
 
 ## Family
 otu_rel_abund_biof %>%
-  filter(level=="Family") %>%
-  group_by(sample_id, sample_type, taxon) %>%
+filter(level=="Family") %>%
+  group_by(sample_id, location, taxon) %>%
   summarize(rel_abund = sum(rel_abund)) %>%
-  group_by(sample_type, taxon) %>%
+  group_by(location, taxon) %>%
   summarize(mean_rel_abund = 100*mean(rel_abund)) %>%
-  ggplot(aes(x=sample_type, y=mean_rel_abund, fill=taxon)) +
-  geom_col(aes(x=sample_type, y=mean_rel_abund), colour="black", stroke=10) +
+  ggplot(aes(x=location, y=mean_rel_abund, fill=taxon)) +
+  geom_col(aes(x=location, y=mean_rel_abund), colour="black", stroke=10) +
     labs(x=NULL, 
          y="Mean Relative Abundance (%)") +
     theme_classic()
@@ -963,6 +963,9 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/al
 # Beta Diversity Metrics: Boxplots of Shannon, Evenness, and Pielou
 ```{r}
 # Shannon
+otu.table.diver.all <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu.table.diver.all.csv")
+otu.table.diver.all
+
 data(otu.table.diver.all)
 H <- diversity(otu.table.diver.all)
 H
