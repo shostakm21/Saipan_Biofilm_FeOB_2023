@@ -13,6 +13,10 @@ BiocManager::install("microbiome")
 ```
 
 ```{r}
+install.packages(pkgs=c("BiodiversityR", "vegan","Rcmdr", "MASS", "mgcv","cluster", "RODBC", "rpart", "effects", "multcomp","ellipse", "maptree", "sp", "splancs", "spatial","akima", "nnet", "dismo", "raster", "rgdal", "bootstrap", "PresenceAbsence","maxlike", "gbm", "randomForest", "gam", "earth", "mda","kernlab", "e1071", "glmnet", "sem", "rgl", "relimp","lmtest", "leaps", "Hmisc", "colorspace", "aplpack","abind", "XLConnect", "car", "markdown", "knitr","geosphere", "maptools", "rgeos", "ENMeval", "red"),dependencies=c("Depends", "Imports"))
+```
+
+```{r}
 #All the packages you will need for entire code, some of these could be unnecessary pending what you want to graph
 library(dada2)
 library(BiocManager)
@@ -618,6 +622,15 @@ ano_all2
 ```
 
 # Ecological Distance Matrices
+DF Tables Manipulation:
+  df_otu_1 
+    ASV_1   to   ASV_22719
+
+  df_otu_2
+    ASV_22720  to  ASV_4358
+
+  df_otu_3
+    ASV_ 436   to   ASV_9999
 ```{r}
 library(tidyverse)
 
@@ -676,6 +689,20 @@ simpson <- function(x){
   n <- sum(x)
   sum(x * (x-1) /(n*n-1))
 }
+
+
+richness_biof <- function(x){
+  sum(x > 0)}
+
+shannon_biof <- function(x){
+  relabund <- x[x>0]/sum(x)
+  -sum(relabund * log(relabund))
+}
+
+simpson_biof <- function(x){
+  n <- sum(x)
+  sum(x * (x-1) /(n*n-1))
+}
 ```
 
 ## Diversity Metrics
@@ -703,11 +730,11 @@ diversity_metrics %>%
   group_by(location) %>%
   pivot_longer(cols=c(richness, shannon, evenness), 
                names_to="metric") %>%
-ggplot(aes(x=n, y=value, color= sample_type)) +
-  geom_boxplot() +
+ggplot(aes(x=n, y=value, fill= sample_type)) +
+  geom_boxplot(outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
   facet_wrap(~metric, nrow=4, scales="free_y")
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/alpha_diversity_metrics_all_sample_type.tiff", width = 10, height = 15)
+ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/alpha_diversity_metrics_all_sample_type.tiff", width = 10, height = 20)
 
 #Each point represents a sample, (n) Sum of Count, (X) Total number of sequences for each sample & (Y) Value of diversity metric
 ```
@@ -724,35 +751,37 @@ richness
 
 evenness <- H/log(richness)
 evenness
+```
 
+```{r}
 metadata_all <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/metadata_saipan.csv")
 metadata_all
 
 alpha <- cbind(shannon = H, richness = richness, pielou = evenness, metadata_all)
-write.csv(alpha, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/diversity_indices_bio_sed_water.csv")
+#write.csv(alpha, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/diversity_indices_bio_sed_water.csv")
 head(alpha)
 ```
 
 ## Plot Diversity Boxplots: Sample Location
 ```{r}
-plot.shan <- ggplot(alpha, aes(x = location, y = shannon, colour = location)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+plot.shan <- ggplot(alpha, aes(x = location, y = shannon, fill = location)) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
 
-plot.rich <-ggplot(alpha, aes(x = location, y = richness, colour = location)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+plot.rich <-ggplot(alpha, aes(x = location, y = richness, fill = location)) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
 
-plot.even <- ggplot(alpha, aes(x = location, y = pielou, colour = location)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+plot.even <- ggplot(alpha, aes(x = location, y = pielou, fill = location)) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
@@ -769,7 +798,7 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Sh
 ## Plot Diversity Boxplots: Sample Type
 ```{r}
 plot.shan <- ggplot(alpha, aes(x = sample_type, y = shannon, colour = sample_type)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
 theme_bw() +
@@ -777,7 +806,7 @@ theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
 
 plot.rich <-ggplot(alpha, aes(x = sample_type, y = richness, colour = sample_type)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
@@ -785,7 +814,7 @@ theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
 
 plot.even <- ggplot(alpha, aes(x = sample_type, y = pielou, colour = sample_type)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
@@ -802,7 +831,7 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Sh
 ## Plot Diversity Boxplots: Sample Depth
 ```{r}
 plot.shan <- ggplot(alpha, aes(x = depth, y = shannon, colour = depth)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
 theme_bw() +
@@ -810,7 +839,7 @@ theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
 
 plot.rich <-ggplot(alpha, aes(x = depth, y = richness, colour = depth)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
@@ -818,7 +847,7 @@ theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
 
 plot.even <- ggplot(alpha, aes(x = depth, y = pielou, colour = depth)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
@@ -835,7 +864,7 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Sh
 ## Plot Diversity Boxplots: Metal Type
 ```{r}
 plot.shan <- ggplot(alpha, aes(x = metal_type, y = shannon, colour = metal_type)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Shannon's H'") + 
 xlab("") +
 theme_bw() +
@@ -843,7 +872,7 @@ theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.shan
 
 plot.rich <-ggplot(alpha, aes(x = metal_type, y = richness, colour = metal_type)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
@@ -851,7 +880,7 @@ theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
 plot.rich
 
 plot.even <- ggplot(alpha, aes(x = metal_type, y = pielou, colour = metal_type)) +
-geom_boxplot(size = 1, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
+geom_boxplot(size = 0.5, outlier.color = "black", outlier.shape = 8, outlier.size = 2) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
@@ -865,10 +894,17 @@ plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.
 ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_metal_type_all.tiff")
 ```
 -----------------------------------------------------------------------
-NEED TO MAKE EXCEL SHEETS!!
-CODE NOT RUN YET 10/21/2024
-
 ## Diversity Metrics
+DF Tables Manipulation:
+  df_otu_1_biof 
+    ASV_1   to   ASV_22719
+
+  df_otu_2_biof
+    ASV_22720  to  ASV_4358
+
+  df_otu_3_biof
+    ASV_ 436   to   ASV_9999
+    
 ```{r}
 # Making OTU Table
 df1_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_1_biof.csv")
@@ -883,23 +919,30 @@ df3_biof
 df_otu_biof <- list(df1_biof, df2_biof, df3_biof)
 df_otu_biof
 
-write.table(df_otu_biof,"/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_biof_saipan.csv", sep=",", col.names=NA)
+write.table(df_otu_biof,"/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_biof_saipan.csv", sep=",", quote=F, col.names=NA)
 ```
 
-CODE NOT RUN YET 10/21/2024
 ```{r}
 df_otu_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_biof_saipan.csv")
-df_otu_biof <- subset(df_otu, select = -c(X))
-df_otu_biof
+df_otu_biofilm <- df_otu_biof %>% select (-c(X))
+df_otu_biofilm
 
-otu_count_biof <- df_otu_biof %>%
+write.table(df_otu_biofilm,"/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_biof_saipan.csv", sep=",", col.names=NA)
+```
+
+```{r}
+df_otu_biofilm <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_biof_saipan.csv")
+otu_count_biof <- df_otu_biofilm %>% select (-c(X)) %>%
   pivot_longer(-sample_id, names_to = "ASV", values_to = "count")
+
 otu_count_biof
 
 write.table(otu_count_biof, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_count_biof_saipan.csv", sep=",", quote=F, col.names=NA)
+
+otu_count_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_count_biof_saipan.csv")
+otu_count_biof
 ```
 
-CODE NOT RUN YET 10/21/2024
 ```{r}
 otu_count_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_count_biof_saipan.csv")
 
@@ -914,7 +957,7 @@ otu_count_biof %>%
 #Going to set threshold at 5000
 ```
 
-CODE NOT RUN YET 10/21/2024
+# Biofilm Diversity Metrics
 ```{r}
 otu_count_biof <- otu_count_biof %>%
   group_by(sample_id) %>%
@@ -926,21 +969,23 @@ otu_count_biof <- otu_count_biof %>%
 write.table(otu_count_biof, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_count_biof_diversity_metrics.csv", sep=",", quote=F, col.names=NA)
 ```
 
-CODE NOT RUN YET 10/21/2024
 ```{r}
-diversity_metrics_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/diversity_metrics_biof.csv")
+diversity_metrics_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu_count_biof_diversity_metrics.csv")
 diversity_metrics_biof
 
 write.table(diversity_metrics_biof, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/saipan_biof_diversity_metrics.csv", sep=",", quote=F, col.names=NA)
 ```
 
-CODE NOT RUN YET 10/21/2024
+#Plot Alpha Diversity Functions Biofilms
 ```{r}
+diversity_metrics_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/saipan_biof_diversity_metrics.csv")
+diversity_metrics_biof
+
 diversity_metrics_biof %>%
   group_by(location) %>%
   pivot_longer(cols=c(richness, shannon, evenness), 
                names_to="metric") %>%
-ggplot(aes(x=n, y=value, color= location)) +
+ggplot(aes(x=n, y=value, fill= location)) +
   geom_boxplot() +
   facet_wrap(~metric, nrow=4, scales="free_y")
 
@@ -949,81 +994,72 @@ ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/al
 #Each point represents a sample, (n) Sum of Count, (X) Total number of sequences for each sample & (Y) Value of diversity metric
 ```
 
-CODE NOT RUN YET 10/21/2024
-```{r}
-otu_count_biof %>%
-  group_by(sample_id) %>%
-  summarize(richness = richness(count),
-            shannon = shannon(count),
-            evenness = shannon/log(richness),
-            n=sum(count)) %>%
-  pivot_longer(cols=c(richness, shannon, evenness), 
-               names_to="metric") %>%
-ggplot(aes(x=n, y=value, color= sample_id,fill=sample_id)) +
-  geom_point() +
-  facet_wrap(~metric, nrow=4, scales="free_y")
-
-ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/alpha_diversity_metrics_biof.tiff", width = 30, height = 30)
-
-#Each point represents a sample, (Y) Value of metric & (X) Total number of sequences for each sample
-```
-
-CODE NOT RUN YET 10/21/2024
+NOT RUN YET AS OF 11/11/2024
 ```{r}
 # Shannon, Richness and Evenness
-data(otu.table.diver.biof)
-H <- diversity(otu.table.diver.biof)
-H
+otu.table.diver.biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/df_otu_biof_saipan.csv")
+otu.table.diver.biof
+```
 
-richness <- specnumber(otu.table.diver.biof)
-richness
+```{r}
+H_biof <- diversity(otu.table.diver.biof)
+H_biof
+```
 
-evenness <- H/log(richness)
-evenness
+```{r}
+richness_biof <- specnumber(otu.table.diver.biof)
+richness_biof
+```
 
+```{r}
+evenness_biof <- H-biof/log(richness_biof)
+evenness_biof
+```
+
+```{r}
 metadata_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/metadata_biof.csv")
 metadata_biof
 
-alpha_biof <- cbind(shannon = H, richness = richness, pielou = evenness, metadata_all)
-write.csv(alpha, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/diversity_indices_biof.csv")
+alpha_biof <- cbind(shannon = H_biof, richness = richness_biof, pielou = evenness_biof, metadata_biof)
+write.csv(alpha_biof, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/diversity_indices_biof.csv")
 head(alpha_biof)
 ```
 
-CODE NOT RUN YET 10/21/2024
+NOT RUN YET AS OF 11/11/2024
 ## Plot Diversity Boxplots: Biofilm Only - Sample Location
 ```{r}
-plot.shan <- ggplot(alpha_biof, aes(x = location, y = shannon, colour = location)) +
+plot.shan.biof <- ggplot(alpha_biof, aes(x = location, y = shannon, colour = location)) +
 geom_boxplot(size = 1) +
 ylab("Shannon's H'") + 
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
-plot.shan
+plot.shan.biof
 
-plot.rich <-ggplot(alpha_biof, aes(x = location, y = richness, colour = location)) +
+plot.rich.biof <-ggplot(alpha_biof, aes(x = location, y = richness, colour = location)) +
 geom_boxplot(size = 1) +
 ylab("Species Richness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
-plot.rich
+plot.rich.biof
 
-plot.even <- ggplot(alpha_biof, aes(x = location, y = pielou, colour = location)) +
+plot.even.biof <- ggplot(alpha_biof, aes(x = location, y = pielou, colour = location)) +
 geom_boxplot(size = 1) +
 ylab("Pielou's Evenness") +
 xlab("") +
 theme_bw() +
 theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.4))
-plot.even
+plot.even.biof
 
-legend <- get_legend(plot.even)
+legend.biof <- get_legend(plot.even.biof)
 
-plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.position = "none"), plot.even + theme(legend.position = "none"),ncol = 3)
+plot_grid(plot.shan.biof + theme(legend.position = "none"), plot.rich.biof + theme(legend.position = "none"), plot.even.biof + theme(legend.position = "none"),ncol = 3)
 
 ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_biof.tiff")
 ```
 
-CODE NOT RUN YET 10/21/2024
+NOT RUN YET AS OF 11/11/2024
 ## Plot Diversity Boxplots: Biofilm Only - Metal Type
 ```{r}
 plot.shan <- ggplot(alpha_biof, aes(x = metal_type, y = shannon, colour = metal_type)) +
@@ -1057,7 +1093,7 @@ plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.
 ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_biof_metaL_type.tiff")
 ```
 
-CODE NOT RUN YET 10/21/2024
+NOT RUN YET AS OF 11/11/2024
 ## Plot Diversity Boxplots: Biofilm Only - Depth
 ```{r}
 plot.shan <- ggplot(alpha_biof, aes(x = depth, y = shannon, colour = depth)) +
@@ -1090,10 +1126,8 @@ plot_grid(plot.shan + theme(legend.position = "none"), plot.rich + theme(legend.
 
 ggsave("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/results/Shannon_Richness_Eveness_biof_depth.tiff")
 ```
-
-CODE NOT RUN YET 10/21/2024
+NOT RUN YET AS OF 11/11/2024
 #SIMPER Analysis: 
-NEED TO RUN THIS WHOLE CHUNK & GET WORKING!!!
 ```{r}
 # Biofilm, Sediment and Water Samples
 otu_table_all <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/asv_otu_saipan.csv", header=T, row.names=1, check.names=FALSE)
@@ -1111,6 +1145,11 @@ rownames(otu.table.diver.mdf.all) <- metadata$location
 otu.table.diver.bray.all <- vegdist(otu.table.diver.mdf.all, method="bray")
 otu.table.diver.bray.all
 
+write.table(otu.table.diver.all, "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/otu.table.diver.all.csv", sep=",", quote=F, col.names=NA)
+```
+
+NOT RUN YET AS OF 11/11/2024
+```{r}
 # Simper
 simper_all <- simper(otu.table.diver.all, metadata$location, permutations=999)
 options(max.print=10)
@@ -1122,7 +1161,63 @@ summary(sim_all)
 
 simper <- simper(m_com, group=pc$location, permutations = 999)
 simper
-dput(simper, file = "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/simp.txt")
+dput(simper, file = "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/simp_all.txt")
 ```
 
+NOT RUN YET AS OF 11/11/2024
+#Simper Analysis: Biofilm Only
+```{r}
+# Biofilm
+otu_table_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/asv_otu_biof.csv", header=T, row.names=1, check.names=FALSE)
+
+metadata_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/metadata_biof.csv")
+
+## Transpose the data to have sample names on rows
+otu.table.diver.biof <- t(otu_table_biof)
+otu.table.diver.biof <- as.data.frame(otu.table.diver.biof)
+head(otu.table.diver.biof)
+
+otu.table.diver.mdf.biof <- as.matrix.data.frame(otu.table.diver.biof)
+rownames(otu.table.diver.mdf.biof) <- metadata_biof$location
+
+otu.table.diver.bray.biof <- vegdist(otu.table.diver.mdf.biof, method="bray")
+otu.table.diver.bray.biof
+```
+
+NOT RUN YET AS OF 11/11/2024
+```{r}
+# Simper: Biofilm Only
+simper_biof <- simper(otu.table.diver.biof, metadata_biof$location, permutations=999)
+options(max.print=10)
+
+#summary(simper_biof)
+dput(simper_biof, file = "simp_biof.txt")
+sim_biof <- dget("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/simp_biof.txt")
+summary(sim_biof)
+
+simper_biof <- simper(m_com_biof, group=pc$location, permutations = 999)
+simper_biof
+dput(simper, file = "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/simp_biof.txt")
+```
+
+NOT RUN YET AS OF 11/11/2024
 ASK APRIL ABOUT ABUNDNACE CURVES!!
+# Abundance Curves: https://www.worldagroforestry.org/output/tree-diversity-analysis
+```{r}
+install.packages(pkgs=c("BiodiversityR", "vegan","Rcmdr", "MASS", "mgcv","cluster", "RODBC", "rpart", "effects", "multcomp","ellipse", "maptree", "sp", "splancs", "spatial","akima", "nnet", "dismo", "raster", "rgdal", "bootstrap", "PresenceAbsence","maxlike", "gbm", "randomForest", "gam", "earth", "mda","kernlab", "e1071", "glmnet", "sem", "rgl", "relimp","lmtest", "leaps", "Hmisc", "colorspace", "aplpack","abind", "XLConnect", "car", "markdown", "knitr","geosphere", "maptools", "rgeos", "ENMeval", "red"),dependencies=c("Depends", "Imports"))
+```
+
+```{r}
+library(BiodiversityR)
+```
+
+```{r}
+BiodiversityRGUI()
+```
+
+```{r}
+RankAbun.1 <- rankabundance(???)
+RankAbun.1
+rankabunplot(RankAbun.1, scale='abundance', addit=FALSE, specnames=c(1,2,3))
+rankabunplot(RankAbun.1, scale='logabun', addit=FALSE, specnames=c(1:30), srt=45, ylim=c(1,100))
+```
