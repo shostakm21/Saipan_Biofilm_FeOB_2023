@@ -842,6 +842,21 @@ ano_biof
       #Significance: 0.3754
 ```
 
+```{r}
+# Biofilm Only: By Depth
+
+pc_ano_biof <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/nmds_asv_otu_biof.csv")
+pc_ano_biof
+
+com_ano_biof = pc_ano_biof[,7:ncol(pc_ano_biof)]
+m_com_ano_biof = as.matrix(com_ano_biof)
+ano_biof = anosim(m_com_ano_biof, pc_ano_biof$depth, distance = "bray", permutations = 9999)
+ano_biof
+
+#ANOSIM statistic R: 0.4226
+      #Significance: 1e-04 
+```
+
 # Ecological Distance Matrices
 DF Tables Manipulation:
   df_otu_1 
