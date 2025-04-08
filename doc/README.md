@@ -1442,63 +1442,118 @@ dput(simper, file = "/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefacti
 NOT RUN YET AS OF 11/11/2024
 ASK APRIL ABOUT ABUNDNACE CURVES!!
 # Abundance Curves: https://www.worldagroforestry.org/output/tree-diversity-analysis
+# Rank Abundance Curves
 ```{r}
-install.packages(pkgs=c("BiodiversityR", "vegan","Rcmdr", "MASS", "mgcv","cluster", "RODBC", "rpart", "effects", "multcomp","ellipse", "maptree", "sp", "splancs", "spatial","akima", "nnet", "dismo", "raster", "rgdal", "bootstrap", "PresenceAbsence","maxlike", "gbm", "randomForest", "gam", "earth", "mda","kernlab", "e1071", "glmnet", "sem", "rgl", "relimp","lmtest", "leaps", "Hmisc", "colorspace", "aplpack","abind", "XLConnect", "car", "markdown", "knitr","geosphere", "maptools", "rgeos", "ENMeval", "red"),dependencies=c("Depends", "Imports"))
+install.packages(pkgs=c("BiodiversityR","vegan", "Rcmdr", "mgcv","cluster", "RODBC", "rpart", "effects", "multcomp","ellipse", "maptree", "sp", "splancs", "spatial","akima", "nnet", "dismo", "raster", "rgdal", "bootstrap", "PresenceAbsence","maxlike", "gbm", "randomForest", "gam", "earth", "mda","kernlab", "e1071", "glmnet", "sem", "rgl", "relimp","lmtest", "leaps", "Hmisc", "colorspace", "aplpack","abind", "XLConnect", "car", "markdown", "knitr","geosphere", "maptools", "rgeos", "ENMeval", "red"),dependencies=c("Depends", "Imports"))
 ```
 
 ```{r}
 library(BiodiversityR)
-```
-
-```{r}
 BiodiversityRGUI()
-```
 
-```{r}
-RankAbun.1 <- rankabundance(???)
+library(vegan)
+library(ggplot2)
+library(ggrepel)
+
+saipan <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/saipan_abund_count.csv")
+saipan
+
+str(saipan)
+
+saipan.env <- read.csv("/Users/maggieshostak/Desktop/Saipan_R_Studio/post_rarefaction/saipan.env.csv")
+saipan.env
+
+saipan.env$sample_type<-as.factor(saipan.env$sample_type)
+saipan.env$location<-as.factor(saipan.env$location)
+str(saipan.env)
+
+saipan.env
+
+RankAbun.1 <- rankabundance(saipan)
 RankAbun.1
-rankabunplot(RankAbun.1, scale='abundance', addit=FALSE, specnames=c(1,2,3))
-rankabunplot(RankAbun.1, scale='logabun', addit=FALSE, specnames=c(1:30), srt=45, ylim=c(1,100))
+
+rankabunplot(RankAbun.1, scale='abundance', addit=FALSE, specnames=c(1,2,3,4,5))
+rankabunplot(RankAbun.1, scale='proportion', addit=FALSE, specnames=c(1,2,3,4,5))
+rankabunplot(RankAbun.1, scale='logabun', addit=FALSE, specnames=c(1:30),srt=45, ylim=c(1,100))
+
+rankabuncomp(saipan, y=saipan.env, factor='location', scale='proportion', legend=FALSE)
 ```
 
-# Whittaker Plot
+# Taxa Abundance Plot: Top 5 Taxa
 ```{r}
-otu_counts <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_otu_2023.csv") %>%
+otu_counts_5 <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_otu_top_5_2023.csv") %>%
   pivot_longer(-ASV, names_to="sample_id", values_to = "count")
-otu_counts
-```
+otu_counts_5
 
-```{r}
-Tax <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_tax_phyla_only_2023.csv")
-Tax
-```
+Tax_5 <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_tax_top_5_2023.csv")
+Tax_5
 
-```{r}
-# Creating ASV TAXA COUNT Table
-data <- otu_counts %>%
-  left_join(Tax, by="ASV")
-data
-```
+data5 <- otu_counts_5 %>%
+  left_join(Tax_5, by="ASV")
+data5
 
-```{r}
-# Creating ASV TAXA COUNT METADATA Table: https://www.youtube.com/watch?v=siIoupAnILk
 meta <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/metadata_saipan.csv")
 meta
 
-# Making Master Data Table: ASV_TAX_COUNT_METADATA
-data <- data %>%
+data5 <- data5 %>%
   left_join(meta, by="sample_id")
-data
+data5
 
-write.table(data, "/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_count_tax_metadata_2023.csv", sep=",", quote=F, col.names=NA)
-```
+write.table(data5, "/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_count_tax_top_5_metadata_2023.csv", sep=",", quote=F, col.names=NA)
 
-```{r}
-# Making Plot with Master Data Table
-data %>%
+data5 %>%
   ggplot(aes(x = sample_id, y = count)) +
   facet_grid(~ location, scales = "free_x", space = "free_x") +
   geom_bar(aes(fill = Phylum), stat = "identity", position = "fill")
 
-ggsave("/Users/maggieshostak/Desktop/Saipan_2023_2025/master_data_table_plot.tiff", width = 40, height = 20)
+ggsave("/Users/maggieshostak/Desktop/Saipan_2023_2025/master_data_table_top_5_plot.tiff", width = 40, height = 20)
+
+data5 %>%
+  ggplot(aes(x = sample_id, y = count)) +
+  facet_grid(~ location + metal_type, scales = "free_x", space = "free_x") +
+  geom_bar(aes(fill = Phylum), stat = "identity", position = "fill")
+
+ggsave("/Users/maggieshostak/Desktop/Saipan_2023_2025/master_data_table_top_5_plot2.tiff", width = 40, height = 20)
+
+data5 %>%
+  ggplot(aes(x = sample_id, y = count)) +
+  facet_grid(~ location, scales = "free_x", space = "free_x") +
+  geom_bar(aes(fill = Phylum), stat = "identity", position = "fill", width = 1) +
+  scale_y_continuous(name = "Relative Abundance",
+                     labels = scales::percent) +
+  scale_fill_brewer(palette = "Paired") +
+  theme(axis.text.x = element_text(angle= 30))#,
+       # axis.text.y = element_text(colour = "black"),
+       # strip.text = element_text(face = "bold"),
+       # strip.background = element_blank ())
+
+ggsave("/Users/maggieshostak/Desktop/Saipan_2023_2025/master_data_table_top_5_plot3.tiff", width = 30, height = 20)
+
+data5 %>%
+  ggplot(aes(x = sample_id, y = count)) +
+  facet_grid(~ location + metal_type, scales = "free_x", space = "free_x") +
+  geom_bar(aes(fill = Phylum), stat = "identity", position = "fill", width = 1) +
+  scale_y_continuous(name = "Relative Abundance",
+                     labels = scales::percent) +
+  scale_fill_brewer(palette = "Paired") +
+  theme(axis.text.x = element_text(angle= 30))#,
+        #axis.text.y = element_text(colour = "black"),
+        #strip.text = element_text(face = "bold"),
+        #strip.background = element_blank ())
+
+ggsave("/Users/maggieshostak/Desktop/Saipan_2023_2025/master_data_table_top_5_plot4.tiff", width = 45, height = 20)
+
+data5 %>%
+  ggplot(aes(x = sample_id, y = count)) +
+  facet_grid(~ location + depth, scales = "free_x", space = "free_x") +
+  geom_bar(aes(fill = Phylum), stat = "identity", position = "fill", width = 1) +
+  scale_y_continuous(name = "Relative Abundance",
+                     labels = scales::percent) +
+  scale_fill_brewer(palette = "Paired") +
+  theme(axis.text.x = element_text(angle= 30))#,
+        #axis.text.y = element_text(colour = "black"),
+        #strip.text = element_text(face = "bold"),
+        #strip.background = element_blank ())
+
+ggsave("/Users/maggieshostak/Desktop/Saipan_2023_2025/master_data_table_top_5_plot5.tiff", width = 35, height = 20)
 ```
