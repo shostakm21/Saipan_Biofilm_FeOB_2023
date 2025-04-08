@@ -1460,3 +1460,45 @@ RankAbun.1
 rankabunplot(RankAbun.1, scale='abundance', addit=FALSE, specnames=c(1,2,3))
 rankabunplot(RankAbun.1, scale='logabun', addit=FALSE, specnames=c(1:30), srt=45, ylim=c(1,100))
 ```
+
+# Whittaker Plot
+```{r}
+otu_counts <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_otu_2023.csv") %>%
+  pivot_longer(-ASV, names_to="sample_id", values_to = "count")
+otu_counts
+```
+
+```{r}
+Tax <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_tax_phyla_only_2023.csv")
+Tax
+```
+
+```{r}
+# Creating ASV TAXA COUNT Table
+data <- otu_counts %>%
+  left_join(Tax, by="ASV")
+data
+```
+
+```{r}
+# Creating ASV TAXA COUNT METADATA Table: https://www.youtube.com/watch?v=siIoupAnILk
+meta <- read.csv("/Users/maggieshostak/Desktop/Saipan_2023_2025/metadata_saipan.csv")
+meta
+
+# Making Master Data Table: ASV_TAX_COUNT_METADATA
+data <- data %>%
+  left_join(meta, by="sample_id")
+data
+
+write.table(data, "/Users/maggieshostak/Desktop/Saipan_2023_2025/asv_count_tax_metadata_2023.csv", sep=",", quote=F, col.names=NA)
+```
+
+```{r}
+# Making Plot with Master Data Table
+data %>%
+  ggplot(aes(x = sample_id, y = count)) +
+  facet_grid(~ location, scales = "free_x", space = "free_x") +
+  geom_bar(aes(fill = Phylum), stat = "identity", position = "fill")
+
+ggsave("/Users/maggieshostak/Desktop/Saipan_2023_2025/master_data_table_plot.tiff", width = 40, height = 20)
+```
